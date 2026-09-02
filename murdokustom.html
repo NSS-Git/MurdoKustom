@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Murdokustom · Jose & Mocca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1b2030;
+  --ink2:#252b3d;
+  --paper:#ece4d1;
+  --paper2:#f5efe0;
+  --paper-line:#c9bd9e;
+  --blood:#9c2b2b;
+  --blood-dark:#6e1c1c;
+  --brass:#b8935a;
+  --teal:#3c5c5c;
+  --teal-lt:#5c8484;
+  --ok:#4c7a4c;
+  --text-dark:#2a2416;
+  --text-light:#efe8d8;
+  --shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse at top, #262c40 0%, var(--ink) 60%);
+  color:var(--text-light);
+  font-family:'Libre Franklin',sans-serif;
+  min-height:100vh;
+  -webkit-tap-highlight-color: transparent;
+}
+.app{max-width:920px;margin:0 auto;padding:18px 14px 60px;}
+
+/* ---------- Header ---------- */
+.masthead{
+  text-align:center;
+  padding:22px 10px 16px;
+  border-bottom:2px solid var(--brass);
+  margin-bottom:20px;
+  position:relative;
+}
+.masthead .kicker{
+  font-family:'Special Elite',monospace;
+  letter-spacing:.35em;
+  font-size:11px;
+  color:var(--brass);
+  text-transform:uppercase;
+}
+.masthead h1{
+  font-family:'Special Elite',monospace;
+  font-size:clamp(28px,7vw,42px);
+  margin:6px 0 4px;
+  color:var(--text-light);
+  letter-spacing:.06em;
+}
+.masthead .sub{
+  font-size:13px;
+  color:#a9a08a;
+  font-style:italic;
+}
+
+/* ---------- Setup screen ---------- */
+.card{
+  background:var(--paper);
+  color:var(--text-dark);
+  border-radius:6px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  position:relative;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,.035) 28px);
+}
+.card::before{
+  content:'';
+  position:absolute; left:16px; top:0; bottom:0; width:2px;
+  background:var(--blood); opacity:.35;
+}
+.section-title{
+  font-family:'Special Elite',monospace;
+  font-size:13px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--blood-dark);
+  margin:0 0 12px;
+  padding-left:14px;
+}
+.choice-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:22px;
+}
+.choice-grid .choice-card:nth-child(3){
+  grid-column: span 2;
+}
+.choice-card{
+  border:2px solid var(--paper-line);
+  background:var(--paper2);
+  border-radius:5px;
+  padding:14px 10px;
+  text-align:center;
+  cursor:pointer;
+  transition:.15s;
+  font-family:'Libre Franklin',sans-serif;
+}
+.choice-card:hover{border-color:var(--brass);}
+.choice-card.selected{
+  border-color:var(--blood);
+  background:#fff;
+  box-shadow:inset 0 0 0 1px var(--blood);
+}
+.choice-card .emoji{font-size:26px;display:block;margin-bottom:6px;}
+.choice-card .name{font-weight:700;font-size:14px;}
+.choice-card .desc{font-size:11px;color:#6a5f47;margin-top:3px;}
+
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px;}
+.diff-card{
+  border:2px solid var(--paper-line);
+  background:var(--paper2);
+  border-radius:5px;
+  padding:12px 6px;
+  text-align:center;
+  cursor:pointer;
+  font-weight:700;
+  font-size:13px;
+}
+.diff-card small{display:block;font-weight:400;font-size:10px;color:#6a5f47;margin-top:3px;}
+.diff-card.selected{border-color:var(--teal);background:#fff;box-shadow:inset 0 0 0 1px var(--teal);}
+
+.roster{
+  display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 20px; justify-content:center;
+}
+.chip{
+  font-size:11px; padding:4px 9px; border-radius:20px;
+  background:var(--paper2); border:1px solid var(--paper-line); color:#6a5f47;
+}
+.chip.victim{background:var(--blood); color:#fff; border-color:var(--blood-dark); font-weight:700;}
+
+.big-btn{
+  width:100%;
+  background:var(--blood);
+  color:#fff;
+  border:none;
+  padding:15px;
+  font-family:'Special Elite',monospace;
+  font-size:16px;
+  letter-spacing:.1em;
+  border-radius:5px;
+  cursor:pointer;
+  box-shadow:0 4px 0 var(--blood-dark);
+  transition:.1s;
+}
+.big-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--blood-dark);}
+.big-btn:disabled{background:#8a8478;box-shadow:0 4px 0 #66614f;cursor:not-allowed;}
+
+/* ---------- Game screen ---------- */
+.hidden{display:none !important;}
+.game-topbar{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:14px; flex-wrap:wrap; gap:8px;
+}
+.badge{
+  font-family:'Special Elite',monospace;
+  font-size:12px;
+  background:var(--paper2); color:var(--text-dark);
+  padding:6px 12px; border-radius:20px; border:1px solid var(--brass);
+}
+.timer{font-family:'Special Elite',monospace;font-size:15px;color:var(--brass);}
+.icon-btn{
+  background:var(--ink2); color:var(--text-light); border:1px solid #3a4258;
+  padding:7px 12px; border-radius:5px; cursor:pointer; font-size:12px;
+}
+
+.folder-tab{
+  background:var(--brass); color:var(--text-dark); font-family:'Special Elite',monospace;
+  font-size:11px; letter-spacing:.1em; padding:5px 16px; border-radius:5px 5px 0 0;
+  display:inline-block; margin-left:16px; text-transform:uppercase;
+}
+
+.board-card{
+  background:var(--paper);
+  border-radius:0 8px 8px 8px;
+  box-shadow:var(--shadow);
+  padding:16px;
+  margin-bottom:18px;
+}
+.board-zone{
+  background:var(--paper);
+  border-radius:0 8px 8px 8px;
+  box-shadow:var(--shadow);
+  padding:12px;
+  display:flex; flex-direction:column; gap:8px;
+  flex:1; min-height:0;
+}
+.board-wrap{overflow:auto; padding-bottom:4px; flex:1; min-height:0;}
+.zoom-controls{display:flex; align-items:center; justify-content:center; gap:12px; flex-shrink:0;}
+.zoom-btn{
+  width:34px; height:34px; border-radius:50%; border:2px solid var(--brass);
+  background:var(--paper2); color:var(--text-dark); font-size:19px; font-weight:800;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; padding:0;
+}
+.zoom-btn:active{background:var(--brass); color:#fff;}
+.zoom-level{font-family:'Special Elite',monospace; font-size:12px; color:#6a5f47; min-width:42px; text-align:center;}
+.board{
+  display:grid;
+  gap:3px;
+  margin:0 auto;
+  width:max-content;
+}
+.cell{
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px;
+  border-radius:4px;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  font-weight:700;
+  color:var(--text-dark);
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  touch-action:none;
+  text-align:center;
+  line-height:1.05;
+  transition:transform .12s ease;
+}
+.cell.holding{ transform:scale(0.88); }
+.cell *{ touch-action:none; }
+.room-code{
+  position:absolute; top:2px; left:2px; font-size:7.5px; font-weight:800;
+  letter-spacing:.02em; line-height:1; z-index:3; pointer-events:none;
+  background:rgba(255,255,255,.88); padding:1.5px 3px; border-radius:3px;
+}
+.room-label {
+  position: absolute; 
+  z-index: 4; 
+  pointer-events: none;
+  font-weight: 800; 
+  text-align: center; 
+  letter-spacing: .02em;
+  color: #fff; 
+  white-space: nowrap; 
+  overflow: visible; /* Cambiado para permitir el desbordamiento */
+  /* text-overflow: ellipsis; Eliminado para que no recorte el texto */
+  text-shadow:
+    -1px -1px 1px rgba(0,0,0,.85), 1px -1px 1px rgba(0,0,0,.85),
+    -1px 1px 1px rgba(0,0,0,.85), 1px 1px 1px rgba(0,0,0,.85),
+    0 1px 3px rgba(0,0,0,.6);
+}
+.obstacle-emoji{ font-size:22px; line-height:1; position:relative; z-index:1; }
+.feat-bg{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:24px; opacity:.32; pointer-events:none; z-index:0;
+}
+.suspect-label{ position:relative; z-index:2; font-size:13px; }
+.notes-grid{
+  position:relative; z-index:2; width:100%; height:100%;
+  display:grid; grid-template-columns:repeat(3, 1fr); align-content:center; justify-items:center;
+  gap:0px;
+}
+.note-chip{
+  font-size:7px; font-weight:800; line-height:1; color:var(--text-dark);
+  background:rgba(255,255,255,.55); border-radius:2px; padding:0.5px 1px;
+}
+.note-chip.note-victim{ font-size:9px; background:none; }
+.cell.obstacle{
+  cursor:not-allowed;
+  color:#3a3527;
+}
+.cell.placed{color:#fff;}
+.cell.locked{ box-shadow: inset 0 0 0 3px var(--blood); }
+.cell.armed{ box-shadow: inset 0 0 0 2px var(--brass); animation:armed-pulse 1s ease-in-out infinite; }
+@keyframes armed-pulse{0%,100%{box-shadow: inset 0 0 0 2px var(--brass);} 50%{box-shadow: inset 0 0 0 2px rgba(184,147,90,.3);}}
+.cell.shake{ animation:shake-cell .4s ease; }
+@keyframes shake-cell{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-4px);}
+  40%{transform:translateX(4px);}
+  60%{transform:translateX(-3px);}
+  80%{transform:translateX(3px);}
+}
+.cell.crossed .suspect-label{color:#9c2b2b;}
+.cell.crossed::after{
+  content:'✕'; position:absolute; font-size:22px; color:rgba(156,43,43,.6); z-index:2;
+}
+.cell.victim-reveal{background:var(--blood) !important; color:#fff;}
+.cell.victim-reveal .room-code{display:none;}
+.cell.victim-reveal .suspect-label{font-size:22px;}
+.cell.victim-reveal{animation:pulse 1.2s infinite;}
+.cell.killer-reveal{outline:3px solid gold; outline-offset:-3px;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(156,43,43,.6);}50%{box-shadow:0 0 0 8px rgba(156,43,43,0);}}
+.hint-text{font-size:11px; color:#6a5f47; text-align:center; margin-top:8px; font-style:italic;}
+
+.suspect-bar{
+  display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 6px; justify-content:center;
+}
+.sbtn{
+  padding:8px 12px; border-radius:6px; border:2px solid var(--paper-line);
+  background:var(--paper2); color:var(--text-dark); font-weight:700; font-size:12px; cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.sbtn-dot{width:10px; height:10px; border-radius:50%; display:inline-block; flex-shrink:0;}
+.sbtn.active{background:var(--teal); color:#fff; border-color:var(--teal);}
+.sbtn.victim-btn{border-color:var(--blood);}
+.sbtn.victim-btn.active{background:var(--blood); color:#fff; border-color:var(--blood-dark);}
+.mode-row{display:flex; gap:8px; justify-content:center; margin-top:10px;}
+.mode-btn{
+  flex:1; max-width:180px; padding:9px; border-radius:6px; border:2px solid var(--paper-line);
+  background:var(--paper2); font-size:12px; font-weight:700; cursor:pointer; color:var(--text-dark);
+}
+.mode-btn.active{background:var(--blood); color:#fff; border-color:var(--blood-dark);}
+.mode-btn:disabled{opacity:.4; cursor:not-allowed;}
+
+.legend{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; font-size:11px; color:#5c5340;}
+.legend span{display:inline-flex; align-items:center; gap:4px;}
+.swatch{width:12px; height:12px; border-radius:2px; display:inline-block;}
+
+.rooms-legend{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
+.room-chip{font-size:10px; padding:3px 8px; border-radius:4px; color:#fff;}
+
+.clue-card{
+  background:var(--paper2);
+  border:2px solid var(--paper-line);
+  border-radius:6px;
+  padding:10px 12px;
+  margin-bottom:8px;
+  font-size:13px;
+  color:var(--text-dark);
+  display:block;
+  cursor:pointer;
+  transition:.12s;
+}
+.clue-card:active{transform:scale(0.98);}
+.clue-card.active{
+  border-color:var(--teal);
+  background:#fff;
+  box-shadow:0 0 0 1px var(--teal);
+}
+.clue-card.victim-card{border-style:dashed;}
+.clue-card.victim-card.active{border-color:var(--blood); box-shadow:0 0 0 1px var(--blood);}
+.card-header{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+.card-name{font-weight:800; font-size:13px;}
+.avatar{
+  width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:10px; font-weight:800; flex-shrink:0;
+}
+.avatar-img{
+  object-fit:cover; border:1.5px solid var(--paper-line); background:var(--paper2);
+}
+.clue-lines{display:flex; flex-direction:column; gap:4px; padding-left:38px;}
+.clue-line{line-height:1.35;}
+.clue-line-empty{color:#8a8172; font-style:italic;}
+
+.actions-row{display:flex; gap:10px; margin-top:16px;}
+.actions-row .big-btn{font-size:13px; padding:12px;}
+.secondary{background:var(--teal); box-shadow:0 4px 0 #2a4444;}
+.secondary:active{box-shadow:0 1px 0 #2a4444;}
+
+.feedback{
+  text-align:center; padding:10px; border-radius:6px; margin-top:10px; font-weight:700; font-size:13px;
+}
+.feedback.bad{background:#f3d6d6; color:var(--blood-dark);}
+.feedback.good{background:#d9ead9; color:var(--ok);}
+
+/* ---------- Modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(10,12,20,.85);
+  display:flex; align-items:center; justify-content:center; padding:16px; z-index:50;
+}
+.modal{
+  background:var(--paper); color:var(--text-dark); border-radius:8px; max-width:420px; width:100%;
+  padding:26px 22px; text-align:center; box-shadow:var(--shadow);
+  border-top:6px solid var(--blood);
+}
+.modal .stamp{
+  font-family:'Special Elite',monospace; color:var(--blood); font-size:13px; letter-spacing:.2em;
+  border:2px solid var(--blood); display:inline-block; padding:3px 10px; transform:rotate(-4deg); margin-bottom:10px;
+}
+.modal h2{font-family:'Special Elite',monospace; margin:6px 0 14px; font-size:22px;}
+.modal p{font-size:14px; line-height:1.5; margin-bottom:18px;}
+.modal .killer-name{color:var(--blood-dark); font-weight:800;}
+
+footer.credits{text-align:center; font-size:11px; color:#665f4d; margin-top:8px;}
+
+/* ===== Mobile split-screen game layout =====
+   Top half: the map — fixed in place, never scrolls with the page.
+   Bottom half: clues + character cards — scrolls independently. */
+@media (max-width: 780px){
+  #game:not(.hidden){
+    position:fixed; inset:0; z-index:20;
+    display:flex; flex-direction:column;
+    background:var(--ink);
+  }
+  .mobile-top{
+    flex:0 0 50%; height:50%; min-height:0;
+    display:flex; flex-direction:column;
+    padding:10px 12px 8px;
+    box-sizing:border-box;
+    overflow:hidden;
+  }
+  .mobile-top .game-topbar{margin-bottom:8px;}
+  .board-zone{flex:1; min-height:0;}
+  .mobile-bottom{
+    flex:1 1 50%; height:50%; min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:12px 14px 40px;
+    box-sizing:border-box;
+    background:var(--paper);
+    border-top:3px solid var(--brass);
+  }
+  .mobile-bottom .card,
+  .mobile-bottom .board-card{box-shadow:none; padding:0;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="masthead">
+    <div class="kicker">Expediente de investigación</div>
+    <h1>Murdokustom</h1>
+  </div>
+
+  <!-- SETUP -->
+  <div id="setup" class="card">
+    <div class="section-title">1 · Elige el escenario</div>
+    <div class="choice-grid" id="mapGrid"></div>
+
+    <div class="section-title">2 · Elige la dificultad</div>
+    <div class="diff-grid" id="diffGrid"></div>
+
+    <div class="section-title" style="margin-top:20px;">Reparto</div>
+    <div class="roster" id="roster"></div>
+
+    <button class="big-btn" id="startBtn" disabled>▸ ABRIR EXPEDIENTE</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" class="hidden">
+    <div class="mobile-top" id="mobileTop">
+      <div class="game-topbar">
+        <button class="icon-btn" id="backBtn">← Nuevo caso</button>
+        <div class="timer" id="timer" style="display:none;">00:00</div>
+      </div>
+
+      <div class="board-zone">
+        <div class="board-wrap"><div class="board" id="board"></div></div>
+        <div class="zoom-controls">
+          <button class="zoom-btn" id="zoomOutBtn" aria-label="Reducir mapa">−</button>
+          <span class="zoom-level" id="zoomLevel">100%</span>
+          <button class="zoom-btn" id="zoomInBtn" aria-label="Aumentar mapa">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-bottom" id="mobileBottom">
+      <div class="mode-row">
+        <button class="mode-btn active" id="modePlace">✎ Colocar</button>
+        <button class="mode-btn" id="modeCross">✕ Marcar</button>
+        <button class="mode-btn" id="undoBtn" disabled>↩ Deshacer</button>
+      </div>
+      <div class="hint-text">Toca la tarjeta de un personaje (o de la víctima) para seleccionarlo, y luego toca el mapa para colocarlo · Toque corto = anotación (o arrastra el dedo por varias casillas) · Para fijar la posición definitiva: toca primero la casilla y luego mantenla pulsada</div>
+      <div id="feedback"></div>
+
+      <div class="section-title" style="margin-top:16px;">Pistas del expediente</div>
+      <div id="cluesList"></div>
+
+      <div class="actions-row">
+        <button class="big-btn secondary" id="checkBtn">Comprobar solución</button>
+        <button class="big-btn" id="resetBtn">Reiniciar tablero</button>
+      </div>
+
+      <div class="section-title" style="margin-top:16px;">Referencia del plano</div>
+      <div class="legend" id="obstacleLegend"></div>
+      <div class="legend" id="featureLegend"></div>
+      <div class="rooms-legend" id="roomsLegend"></div>
+    </div>
+  </div>
+
+  <footer class="credits">Murdokustom</footer>
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+/* =========================================================================
+   DATA
+   ========================================================================= */
+
+const SUSPECTS = ["Gema","María","Victoria","Nono","Inma","Raquel","Alicia","Cris","Mario"];
+const SUSPECT_CODES = {
+  "Gema":"GE","María":"MA","Victoria":"VI","Nono":"NO","Inma":"IN",
+  "Raquel":"RA","Alicia":"AL","Cris":"CR","Mario":"MR"
+};
+const SUSPECT_COLORS = {
+  "Gema": "#9e4934",
+  "María": "#315f47",
+  "Victoria": "#d4a03b",
+  "Nono": "#6c3057",
+  "Inma": "#317775",
+  "Raquel": "#d7b899",
+  "Alicia": "#184478",
+  "Cris": "#bd5b3d",
+  "Mario": "#d29a43"
+};
+const VICTIMS = [
+  {id:"jose", name:"Jose", emoji:"💀", found:"hallado", pronoun:"él"},
+  {id:"mocca", name:"Mocca", emoji:"🐾", found:"hallada", pronoun:"ella"}
+];
+function nextVictim(){
+  let idx = parseInt(localStorage.getItem('Murdokustom_victim_turn')||'0',10);
+  if(isNaN(idx)) idx = 0;
+  const v = VICTIMS[idx % VICTIMS.length];
+  localStorage.setItem('Murdokustom_victim_turn', String(idx+1));
+  return v;
+}
+function personLabel(name){
+  if(puzzle && puzzle.victim && name===puzzle.victim.name) return puzzle.victim.emoji;
+  return SUSPECT_CODES[name] || name.slice(0,2).toUpperCase();
+}
+
+
+
+const MAPS = [
+  {
+    id:"cafe", emoji:"🚂", name:"CAF",
+    desc:"",
+    rooms:["la sala de juntas","el departamento de diseño","la sala de maquetas","la mazmorra de Pedro el informático","la recepción","la cafetería"],
+    obstacles:["📦 las piezas","🚂 la maqueta de tren","🗄️ el archivador","🐛 la cuca","🎄 el arbol de navidad","🌻 la planta", "👧🏽 la niña mala", "🥤 la máquina de café"],
+    features:["🚽 el retrete sin agua","🗺️ el mapa del Cairo","☕ el café del Vander","🪑 la silla","📋 el despido de maite","🏷️ el cartel con logo CAF"]
+  },
+  {
+    id:"dental", emoji:"🦷", name:"Moradent",
+    desc:"",
+    rooms:["la sala de espera","la consulta","el baño","el salon de Gema","el laboratorio","el almacén"],
+    obstacles:["🌼 la planta","☢️ la máquina de rayos X","🗄️ el archivador","🛎️ el mostrador de recepción","✂ las tijeras (de D.C)","📦 la caja de kemphor"],
+    features:["🗒 los post-its del hada","🪑 la silla","🖼️ el póster de Gongo","🦷 la dentadura","🔬 el microscopio del señor Moles","🛏️ la camilla"]
+  },
+  {
+    id:"lab", emoji:"🧪", name:"Laboratorio de edafología",
+    desc:"",
+    rooms:["la sala de muestras","la cámara frigorífica","la sala de análisis","la oficina de María","el almacén","la sala de incubación"],
+    obstacles:["🦽 la barbie negra","🧊 el congelador","💎 el pedrusco", "🧯 el extintor","🌵 la planta", "🥚 la incubadora", "📚 los libros del National Geographic"],
+    features:["🌀 la centrifugadora","💻 el escritorio", "🥼 la bata","🔬 el microscopio","🚿 la pileta","📋 los apuntes"]
+  }
+];
+
+const DIFFICULTIES = [
+  {id:"facil", name:"Fácil", n:5, size:6, types:["pin","room","feature","beside"], desc:""},
+  {id:"medio", name:"Intermedio", n:7, size:8, types:["room","feature","beside","compareRow","compareCol"], desc:""},
+  {id:"dificil", name:"Difícil", n:9, size:10, types:["compareRow","compareCol","beside","room"], desc:""}
+];
+
+const ROOM_COLORS = ["#7a5c8a","#3c5c5c","#8a5c3c","#5c7a8a","#8a3c5c","#5c8a5c","#8a7a3c","#5c5c8a","#8a5c5c","#3c8a7a"];
+
+const ROOM_STOPWORDS = new Set(['de','del','la','los','las','y','en','a','al','el']);
+function computeRoomCode(name){
+  const clean = name.replace(/\s*\(.*\)\s*$/,'');
+  const words = clean.split(/\s+/).filter(w=>!ROOM_STOPWORDS.has(w.toLowerCase()));
+  let code = words.map(w=>w[0].toUpperCase()).join('').slice(0,3);
+  if(code.length<2) code = clean.replace(/\s+/g,'').slice(0,3).toUpperCase();
+  return code;
+}
+
+/* =========================================================================
+   STATE
+   ========================================================================= */
+let selectedMap = null, selectedDiff = null;
+let puzzle = null;       // generated puzzle
+let userNotes = null;    // Map "r,c" -> Set of candidate names (suspects or victim), from short taps
+let userCross = null;    // Set of "r,c" crossed/eliminated cells
+let userLocked = null;   // Map "r,c" -> single definitive name (suspect or victim), from long-press
+let activeSuspect = null; // currently selected suspect name OR the current victim's name
+let mode = "place";
+let timerInterval = null;
+let seconds = 0;
+let holdTimer = null;
+let holdTarget = null;
+let suppressClick = false;
+let undoStack = [];      // full undo history (stack) — deshacer as many steps as you want
+const UNDO_MAX = 300;
+const HOLD_MS = 480;
+const DRAG_THRESHOLD = 8; // px of movement before a press becomes a paint-drag
+let dragArmed = null;   // {r,c,downX,downY} set on pointerdown, cleared on release
+let dragActive = false; // true once movement threshold exceeded -> painting mode
+let dragVisited = null; // Set of "r,c" already painted during this gesture
+let dragAction = null;  // 'add-note' | 'remove-note' | 'add-cross' | 'remove-cross'
+let armedCell = null;   // "r,c" of the cell that was tapped once — must hold THIS cell next to lock it
+let boardZoom = 1;      // map zoom level, adjustable with the +/- buttons
+const ZOOM_MIN = 0.6, ZOOM_MAX = 1.8, ZOOM_STEP = 0.15;
+
+/* =========================================================================
+   RENDER SETUP SCREEN
+   ========================================================================= */
+const mapGrid = document.getElementById('mapGrid');
+MAPS.forEach(m=>{
+  const el = document.createElement('div');
+  el.className = 'choice-card';
+  el.innerHTML = `<span class="emoji">${m.emoji}</span><span class="name">${m.name}</span><span class="desc">${m.desc}</span>`;
+  el.onclick = ()=>{ selectedMap = m; [...mapGrid.children].forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); checkReady(); };
+  mapGrid.appendChild(el);
+});
+
+const diffGrid = document.getElementById('diffGrid');
+DIFFICULTIES.forEach(d=>{
+  const el = document.createElement('div');
+  el.className = 'diff-card';
+  el.innerHTML = `${d.name}<small>${d.n} sospechosos · ${d.desc}</small>`;
+  el.onclick = ()=>{ selectedDiff = d; [...diffGrid.children].forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); checkReady(); };
+  diffGrid.appendChild(el);
+});
+
+const roster = document.getElementById('roster');
+SUSPECTS.forEach(s=>{ const c=document.createElement('span'); c.className='chip'; c.textContent=s; roster.appendChild(c); });
+VICTIMS.forEach(v=>{ const vc=document.createElement('span'); vc.className='chip'; vc.textContent = v.name; roster.appendChild(vc); });
+
+// Esta es la función que se había borrado accidentalmente
+function checkReady() {
+  if (selectedMap && selectedDiff) {
+    document.getElementById('startBtn').disabled = false;
+  }
+}
+
+document.getElementById('startBtn').onclick = startGame;
+
+
+/* =========================================================================
+   GENERATION
+   ========================================================================= */
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function rnd(n){ return Math.floor(Math.random()*n); }
+function buildRooms(size, roomNames){
+  const targetCount = roomNames.length;
+  const roomGrid = Array.from({length: size}, () => Array(size).fill(-1));
+  const roomsData = Array.from({length: targetCount}, () => ({ cells: [], r0: size, r1: 0, c0: size, c1: 0 }));
+
+  // 1. Colocar las "semillas" iniciales de cada área en posiciones aleatorias
+  let seeds = [];
+  let attempts = 0;
+  while(seeds.length < targetCount && attempts < 500){
+    attempts++;
+    const r = rnd(size), c = rnd(size);
+    if(!seeds.some(s => s.r === r && s.c === c)){
+      seeds.push({ r, c, id: seeds.length });
+    }
+  }
+
+  // Si por tamaño del tablero no caben todas las semillas distintas, rellenamos las que falten
+  while(seeds.length < targetCount){
+    for(let r=0; r<size; r++){
+      for(let c=0; c<size; c++){
+        if(seeds.length < targetCount && !seeds.some(s => s.r === r && s.c === c)){
+          seeds.push({ r, c, id: seeds.length });
+        }
+      }
+    }
+  }
+
+  // Registrar semillas en la retícula
+  seeds.forEach(s => {
+    roomGrid[s.r][s.c] = s.id;
+    roomsData[s.id].cells.push([s.r, s.c]);
+    updateBounds(roomsData[s.id], s.r, s.c);
+  });
+
+  function updateBounds(room, r, c){
+    if(r < room.r0) room.r0 = r;
+    if(r + 1 > room.r1) room.r1 = r + 1;
+    if(c < room.c0) room.c0 = c;
+    if(c + 1 > room.c1) room.c1 = c + 1;
+  }
+
+  // 2. Crecimiento orgánico celda a celda (tipo Voronoi aleatorio)
+  let changed = true;
+  while(changed){
+    changed = false;
+    // Barajamos el orden de las salas en cada ciclo para que el crecimiento sea caótico y no simétrico
+    const currentRooms = shuffle([...Array(targetCount).keys()]);
+    
+    for(const id of currentRooms){
+      const room = roomsData[id];
+      const frontiers = [];
+      
+      // Buscar celdas libres adyacentes a las actuales de esta sala
+      room.cells.forEach(([r, c]) => {
+        const neighbors = [[r-1,c], [r+1,c], [r,c-1], [r,c+1]];
+        neighbors.forEach(([nr, nc]) => {
+          if(nr >= 0 && nr < size && nc >= 0 && nc < size && roomGrid[nr][nc] === -1){
+            frontiers.push([nr, nc]);
+          }
+        });
+      });
+
+      // Expandir aleatoriamente algunas de las celdas fronterizas
+      shuffle(frontiers).forEach(([nr, nc]) => {
+        // Doble comprobación por si otra sala la ocupó en este mismo microciclo
+        if(roomGrid[nr][nc] === -1){
+          // Añadimos un factor de aleatoriedad alta para que no crezcan de forma uniforme
+          if(Math.random() < 0.75){
+            roomGrid[nr][nc] = id;
+            room.cells.push([nr, nc]);
+            updateBounds(room, nr, nc);
+            changed = true;
+          }
+        }
+      });
+    }
+  }
+
+  // 3. Rellenar cualquier hueco huérfano que haya podido quedar suelto
+  for(let r=0; r<size; r++){
+    for(let c=0; c<size; c++){
+      if(roomGrid[r][c] === -1){
+        // Asignarlo a la sala vecina más cercana o a la 0 por defecto
+        roomGrid[r][c] = 0;
+        roomsData[0].cells.push([r, c]);
+        updateBounds(roomsData[0], r, c);
+      }
+    }
+  }
+
+  // 4. Preparar nombres y rectángulos delimitadores finales para las etiquetas
+  const roomList = [];
+  const roomRects = roomsData.map((room, idx) => {
+    const baseName = roomNames[idx % roomNames.length];
+    const suffix = idx >= roomNames.length ? ` (${Math.floor(idx / roomNames.length) + 1})` : '';
+    roomList.push(baseName + suffix);
+    
+    // Devolvemos los límites máximos (bounding box) de cada sala orgánica para colocar su etiqueta
+    return { r0: room.r0, r1: room.r1, c0: room.c0, c1: room.c1 };
+  });
+
+  return { roomGrid, roomList, roomRects };
+}
+function tryGenerate(mapDef, diff){
+  const size = diff.size;
+  const N = diff.n;
+  const suspects = shuffle(SUSPECTS).slice(0,N);
+  const {roomGrid, roomList, roomRects} = buildRooms(size, mapDef.rooms);
+
+// Listas de objetos únicos obligatorios (con sus emojis exactos)
+  const GUARANTEED_OBS = ["👧🏽 la niña mala", "🛎️ mostrador de recepción", "✂ tijeras (de D.C)", "🦽 barbie negra"];
+  const GUARANTEED_FEAT = ["📋 despido de maite", "🖼️ póster de Gongo", "🔬 microscopio del señor Moles"];
+
+  // --- OBSTÁCULOS ---
+  const obstacle = Array.from({length:size},()=>Array(size).fill(null));
+  const totalCells = size*size;
+  const obstacleCount = Math.floor(totalCells*0.15);
+  let placedObs = 0;
+
+  // Filtrar cuáles obligatorios y cuáles normales hay en ESTE mapa
+  const mapGuaranteedObs = mapDef.obstacles.filter(o => GUARANTEED_OBS.includes(o));
+  const normalObs = mapDef.obstacles.filter(o => !GUARANTEED_OBS.includes(o));
+
+  // 1º Colocar los obstáculos obligatorios (sí o sí, una sola vez)
+  for (const obs of mapGuaranteedObs) {
+    let placed = false;
+    let localGuard = 0;
+    while (!placed && localGuard < 1000) {
+      localGuard++;
+      const r = rnd(size), c = rnd(size);
+      if (!obstacle[r][c]) {
+        obstacle[r][c] = obs;
+        placed = true;
+        placedObs++;
+      }
+    }
+  }
+
+  // 2º Rellenar el resto de la densidad con obstáculos normales (máximo 3 por tipo)
+  const obsCounts = {};
+  let guardObs = 0;
+  while(placedObs < obstacleCount && guardObs < 5000){
+    guardObs++;
+    const r = rnd(size), c = rnd(size);
+    if(!obstacle[r][c]){ 
+      const candidate = normalObs[rnd(normalObs.length)];
+      const currentCount = obsCounts[candidate] || 0;
+      
+      if (currentCount < 3) {
+        obstacle[r][c] = candidate;
+        obsCounts[candidate] = currentCount + 1;
+        placedObs++;
+      }
+    }
+  }
+
+  // --- RASGOS (FEATURES) ---
+  const feature = Array.from({length:size},()=>Array(size).fill(null));
+  const freeCells = [];
+  for(let r=0;r<size;r++) for(let c=0;c<size;c++) if(!obstacle[r][c]) freeCells.push([r,c]);
+  
+  const featCount = Math.floor(freeCells.length*0.18);
+  const shuffledFree = shuffle(freeCells);
+  let placedFeat = 0;
+
+  // Filtrar cuáles obligatorios y cuáles normales hay en ESTE mapa
+  const mapGuaranteedFeat = mapDef.features.filter(f => GUARANTEED_FEAT.includes(f));
+  const normalFeat = mapDef.features.filter(f => !GUARANTEED_FEAT.includes(f));
+
+  // 1º Colocar los rasgos obligatorios
+  for (const feat of mapGuaranteedFeat) {
+    if (placedFeat < shuffledFree.length) {
+      const [r, c] = shuffledFree[placedFeat];
+      feature[r][c] = feat;
+      placedFeat++;
+    }
+  }
+
+  // 2º Rellenar el resto de la densidad con rasgos normales (máximo 3 por tipo)
+  const featCounts = {};
+  let freeIdx = placedFeat;
+  while (placedFeat < featCount && freeIdx < shuffledFree.length) {
+    const [r, c] = shuffledFree[freeIdx];
+    freeIdx++;
+    
+    const candidate = normalFeat[rnd(normalFeat.length)];
+    const currentCount = featCounts[candidate] || 0;
+    
+    if (currentCount < 3) {
+      feature[r][c] = candidate;
+      featCounts[candidate] = currentCount + 1;
+      placedFeat++;
+    }
+  }
+
+  const rowsAvail = shuffle([...Array(size).keys()]);
+  const colsAvail = shuffle([...Array(size).keys()]);
+  const solution = {}; // suspect -> {r,c}
+  const usedRows=new Set(), usedCols=new Set();
+
+  function backtrack(i){
+    if(i>=suspects.length) return true;
+    const s = suspects[i];
+    const rowsShuffled = shuffle(rowsAvail.filter(r=>!usedRows.has(r)));
+    for(const r of rowsShuffled){
+      const colsShuffled = shuffle(colsAvail.filter(c=>!usedCols.has(c)));
+      for(const c of colsShuffled){
+        if(obstacle[r][c]) continue;
+        usedRows.add(r); usedCols.add(c);
+        solution[s]={r,c};
+        if(backtrack(i+1)) return true;
+        usedRows.delete(r); usedCols.delete(c); delete solution[s];
+      }
+    }
+    return false;
+  }
+  if(!backtrack(0)) return null;
+
+  const unusedRow = [...Array(size).keys()].find(r=>!usedRows.has(r));
+  const unusedCol = [...Array(size).keys()].find(c=>!usedCols.has(c));
+  if(unusedRow===undefined || unusedCol===undefined) return null;
+  if(obstacle[unusedRow][unusedCol]) return null; // victim can't be on obstacle, retry
+
+  const victimCell = {r:unusedRow, c:unusedCol};
+  const victimRoom = roomGrid[victimCell.r][victimCell.c];
+  const sharing = suspects.filter(s=> roomGrid[solution[s].r][solution[s].c]===victimRoom);
+  if(sharing.length===0) return null;
+  sharing.sort((a,b)=>{
+    const da = Math.abs(solution[a].r-victimCell.r)+Math.abs(solution[a].c-victimCell.c);
+    const db = Math.abs(solution[b].r-victimCell.r)+Math.abs(solution[b].c-victimCell.c);
+    return da-db;
+  });
+  const killer = sharing[0];
+
+  return {mapDef, diff, size, suspects, roomGrid, roomList, roomRects, obstacle, feature, solution, victimCell, victimRoom, killer};
+}
+
+function generatePuzzle(mapDef, diff){
+  for(let attempt=0; attempt<400; attempt++){
+    const p = tryGenerate(mapDef, diff);
+    if(p){
+      p.clues = generateClues(p, diff);
+      if(p.clues) return p;
+    }
+  }
+  return null;
+}
+
+/* ---------- CLUES ---------- */
+function generateClues(p, diff){
+  const {suspects, solution, feature, roomGrid, roomList, size} = p;
+  const pool = [];
+
+suspects.forEach(s=>{
+    const cell = solution[s];
+    const f = feature[cell.r][cell.c];
+    const room = roomGrid[cell.r][cell.c];
+    
+    // Si hay un rasgo, metemos la pista combinada avanzada (Sala + Rasgo)
+    if(f){
+      pool.push({
+        type: 'pin', 
+        subject: s, 
+        text: `${s} estuvo sobre ${f.replace(/^\S+\s/,'')} en ${roomList[room]}.`, 
+        apply: (dom) => {
+          dom[s] = dom[s].filter(([r,c]) => feature[r][c] === f && roomGrid[r][c] === room);
+        }
+      });
+    } else {
+      // Si no hay rasgo, metemos únicamente la pista de la sala limpia
+      pool.push({
+        type: 'room', 
+        subject: s, 
+        text: `${s} estuvo en ${roomList[room]}.`, 
+        apply: (dom) => {
+          dom[s] = dom[s].filter(([r,c]) => roomGrid[r][c] === room);
+        }
+      });
+    }
+
+    // "Beside" clues
+    const neighbors = [[cell.r-1,cell.c],[cell.r+1,cell.c],[cell.r,cell.c-1],[cell.r,cell.c+1]];
+    neighbors.forEach(([nr,nc])=>{
+      if(nr<0||nc<0||nr>=size||nc>=size) return;
+      const obs = p.obstacle[nr][nc];
+      if(!obs) return;
+      pool.push({
+        type: 'beside', 
+        subject: s, 
+        text: `${s} estuvo justo al lado de ${obs.replace(/^\S+\s/,'')}.`, 
+        apply: (dom) => {
+          dom[s] = dom[s].filter(([r,c]) => Math.abs(r-nr)+Math.abs(c-nc)===1);
+        }
+      });
+    });
+  });
+  // NOTE: every suspect occupies a unique row AND a unique column (like
+  // non-attacking rooks), so "same row/col" or orthogonal adjacency BETWEEN
+  // TWO PEOPLE is never true. The only spatial relations between two people
+  // are strict orderings (north/south, west/east). Adjacency clues instead
+  // describe a person's position relative to a fixed obstacle (see above).
+  for(let i=0;i<suspects.length;i++){
+    for(let j=i+1;j<suspects.length;j++){
+      const A=suspects[i], B=suspects[j], ca=solution[A], cb=solution[B];
+      const [north,south] = ca.r<cb.r ? [A,B] : [B,A];
+      pool.push({type:'compareRow', subjects:[north,south], text:`${north} estuvo en una fila más al norte que ${south}.`, apply:(dom)=>{
+        const maxSouth = Math.max(...dom[south].map(x=>x[0]));
+        const minNorth = Math.min(...dom[north].map(x=>x[0]));
+        dom[north] = dom[north].filter(x=>x[0] < maxSouth+1);
+        dom[south] = dom[south].filter(x=>x[0] > minNorth-1);
+      }});
+      const [west,east] = ca.c<cb.c ? [A,B] : [B,A];
+      pool.push({type:'compareCol', subjects:[west,east], text:`${west} estuvo más al oeste (izquierda) que ${east}.`, apply:(dom)=>{
+        const maxEast = Math.max(...dom[east].map(x=>x[1]));
+        const minWest = Math.min(...dom[west].map(x=>x[1]));
+        dom[west] = dom[west].filter(x=>x[1] < maxEast+1);
+        dom[east] = dom[east].filter(x=>x[1] > minWest-1);
+      }});
+    }
+  }
+
+  suspects.forEach(s=>{
+    const cell = solution[s];
+    pool.push({type:'exact', subject:s, text:`Según los testigos, a ${s} se le vio en la fila ${cell.r+1}, columna ${cell.c+1} del plano.`, apply:(dom)=>{
+      dom[s]=dom[s].filter(([r,c])=>r===cell.r&&c===cell.c);
+    }});
+  });
+
+  const STRENGTH = {pin:5, beside:3, room:2, feature:2, compareRow:1, compareCol:1, exact:0};
+  const byStrengthDesc = (a,b)=> STRENGTH[b.type]-STRENGTH[a.type];
+  const allowed = shuffle(pool.filter(cl=>diff.types.includes(cl.type))).sort(byStrengthDesc);
+  const backup = shuffle(pool.filter(cl=>!diff.types.includes(cl.type) && cl.type!=='exact')).sort(byStrengthDesc);
+  const failsafe = shuffle(pool.filter(cl=>cl.type==='exact'));
+  const ordered = [...allowed, ...backup, ...failsafe];
+
+  const allCells = [];
+  for(let r=0;r<size;r++) for(let c=0;c<size;c++) if(!p.obstacle[r][c]) allCells.push([r,c]);
+
+  function propagate(dom, activeClues){
+    let changed=true, guard=0;
+    while(changed && guard<50){
+      changed=false; guard++;
+      activeClues.forEach(cl=>{
+        const before = suspects.map(s=>dom[s].length).join(',');
+        cl.apply(dom);
+        const after = suspects.map(s=>dom[s].length).join(',');
+        if(before!==after) changed=true;
+      });
+      // Singleton propagation: once a suspect's cell is certain, no one
+      // else can share that row or column. (We deliberately do NOT do a
+      // "hidden single per row/col" pass: one row and one column are
+      // reserved for the victim, so "only one suspect can use row r"
+      // does not imply that suspect occupies row r.)
+      suspects.forEach(s=>{
+        if(dom[s].length===1){
+          const [r,c]=dom[s][0];
+          suspects.forEach(t=>{
+            if(t===s) return;
+            const before=dom[t].length;
+            dom[t]=dom[t].filter(([r2,c2])=> !(r2===r||c2===c));
+            if(dom[t].length!==before) changed=true;
+          });
+        }
+      });
+    }
+  }
+
+  function countSolutions(dom, limit){
+    let count=0;
+    const order = [...suspects].sort((a,b)=>dom[a].length-dom[b].length);
+    const usedR=new Set(), usedC=new Set();
+    function rec(i){
+      if(count>=limit) return;
+      if(i>=order.length){ count++; return; }
+      const s = order[i];
+      for(const [r,c] of dom[s]){
+        if(usedR.has(r)||usedC.has(c)) continue;
+        usedR.add(r); usedC.add(c);
+        rec(i+1);
+        usedR.delete(r); usedC.delete(c);
+        if(count>=limit) return;
+      }
+    }
+    rec(0);
+    return count;
+  }
+
+  let domain = {};
+  suspects.forEach(s=> domain[s] = [...allCells]);
+
+  const chosen = [];
+  let solved = false;
+  for(const clue of ordered){
+    chosen.push(clue);
+    propagate(domain, chosen);
+    if(countSolutions(domain, 2)===1){ solved = true; break; }
+  }
+  if(!solved) return null;
+
+  // Minimize: drop redundant clues, keeping the naturally-few flavor
+  // clues (pin/room/feature) for readability and trimming the numerous
+  // comparison/fallback clues down to only what's actually needed.
+  const GENEROUS_TYPES = ['pin','room','feature','beside'];
+  function domainsFromClues(clueList){
+    const dom={}; suspects.forEach(s=> dom[s]=[...allCells]);
+    propagate(dom, clueList);
+    return dom;
+  }
+  let working = [...chosen];
+  for(let i=working.length-1; i>=0; i--){
+    if(diff.types.includes(working[i].type) && GENEROUS_TYPES.includes(working[i].type)) continue;
+    const candidate = working.slice(0,i).concat(working.slice(i+1));
+    const dom = domainsFromClues(candidate);
+    if(countSolutions(dom,2)===1){ working = candidate; }
+  }
+  return shuffle(working);
+}
+
+/* =========================================================================
+   GAME START / RENDER
+   ========================================================================= */
+function startGame(){
+  const p = generatePuzzle(selectedMap, selectedDiff);
+  if(!p){ alert('No se pudo generar el caso, inténtalo de nuevo.'); return; }
+  puzzle = p;
+  puzzle.victim = nextVictim();
+  puzzle.roomCodes = puzzle.roomList.map(computeRoomCode);
+  userNotes = new Map();
+  userCross = new Set();
+  userLocked = new Map();
+  undoStack = [];
+  armedCell = null;
+  boardZoom = 1;
+  updateZoomDisplay();
+  activeSuspect = puzzle.suspects[0];
+  mode = "place";
+  seconds = 0;
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  document.getElementById('undoBtn').disabled = true;
+  document.getElementById('feedback').innerHTML = '';  renderBoard();
+  renderClues();
+  renderLegends();
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    seconds++;
+    const m = String(Math.floor(seconds/60)).padStart(2,'0');
+    const s = String(seconds%60).padStart(2,'0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+  },1000);
+}
+
+function renderBoard(){
+  const board = document.getElementById('board');
+  const baseCellPx = Math.max(32, Math.min(48, Math.floor(358/puzzle.size)));
+  const cellPx = Math.round(baseCellPx * boardZoom);
+  board.style.gridTemplateColumns = `repeat(${puzzle.size}, ${cellPx}px)`;
+  board.style.gridAutoRows = `${cellPx}px`;
+  board.innerHTML='';
+  for(let r=0;r<puzzle.size;r++){
+    for(let c=0;c<puzzle.size;c++){
+      const div = document.createElement('div');
+      div.className='cell';
+      const key = `${r},${c}`;
+      const roomIdx = puzzle.roomGrid[r][c];
+      const roomColor = ROOM_COLORS[roomIdx%ROOM_COLORS.length];
+
+      // room boundary: thicker colored border where the neighboring room differs (or grid edge)
+      const upDiff = r===0 || puzzle.roomGrid[r-1][c]!==roomIdx;
+      const downDiff = r===puzzle.size-1 || puzzle.roomGrid[r+1][c]!==roomIdx;
+      const leftDiff = c===0 || puzzle.roomGrid[r][c-1]!==roomIdx;
+      const rightDiff = c===puzzle.size-1 || puzzle.roomGrid[r][c+1]!==roomIdx;
+      div.style.borderTop = upDiff ? `2px solid ${roomColor}` : '1px solid rgba(0,0,0,.08)';
+      div.style.borderBottom = downDiff ? `2px solid ${roomColor}` : '1px solid rgba(0,0,0,.08)';
+      div.style.borderLeft = leftDiff ? `2px solid ${roomColor}` : '1px solid rgba(0,0,0,.08)';
+      div.style.borderRight = rightDiff ? `2px solid ${roomColor}` : '1px solid rgba(0,0,0,.08)';
+
+
+      if(puzzle.obstacle[r][c]){
+        div.classList.add('obstacle');
+        div.style.background = hexAlpha(roomColor, 0.14);
+        const em = document.createElement('span');
+        em.className='obstacle-emoji';
+        em.textContent = puzzle.obstacle[r][c].split(' ')[0];
+        div.title = puzzle.obstacle[r][c].replace(/^\S+\s/,'');
+        div.appendChild(em);
+      } else {
+        if(puzzle.feature[r][c]){
+          const featBg = document.createElement('span');
+          featBg.className='feat-bg';
+          featBg.textContent = puzzle.feature[r][c].split(' ')[0];
+          div.title = puzzle.feature[r][c].replace(/^\S+\s/,'');
+          div.appendChild(featBg);
+        }
+
+        const lockedName = userLocked.get(key);
+        const notes = userNotes.get(key);
+
+        if(lockedName){
+          const label = document.createElement('span');
+          label.className='suspect-label';
+          label.textContent = personLabel(lockedName);
+          div.appendChild(label);
+          div.style.background = '#3c5c5c'; // Mismo fondo que el resto
+          div.classList.add('locked','placed');
+          div.title = lockedName;
+        } else if(notes && notes.size>0){
+          const grid = document.createElement('div');
+          grid.className='notes-grid';
+          [...notes].forEach(n=>{
+            const chip = document.createElement('span');
+            chip.className='note-chip';
+            chip.textContent = personLabel(n);
+            grid.appendChild(chip);
+          });
+          div.appendChild(grid);
+          div.classList.add('placed');
+          div.style.background = hexAlpha(roomColor, 0.32);
+        } else {
+          div.style.background = hexAlpha(roomColor, 0.32);
+        }
+        if(userCross.has(key)) div.classList.add('crossed');
+        if(armedCell===key && mode==='place') div.classList.add('armed');
+
+        div.dataset.key = key;
+        div.addEventListener('pointerdown', (e)=> startHold(r,c,div,e));
+        div.addEventListener('contextmenu', e=>e.preventDefault());
+        div.addEventListener('click', ()=>{
+          if(suppressClick){ suppressClick=false; return; }
+          cellClick(r,c);
+        });
+      }
+      board.appendChild(div);
+    }
+  }
+  renderRoomLabels(cellPx);
+}
+function renderRoomLabels(cellPx){
+  const board = document.getElementById('board');
+  board.style.position = 'relative';
+  const gap = 3;
+  const labelH = Math.max(11, Math.min(14, cellPx*0.3));
+  
+  // Array para registrar las cajas ocupadas por las etiquetas {left, top, width, height, idx, text}
+  const placedLabels = [];
+
+  puzzle.roomRects.forEach((rect, idx)=>{
+    const topRow = rect.r0, bottomRow = rect.r1-1;
+    const countObstacles = (row)=>{
+      let n=0;
+      for(let c=rect.c0;c<rect.c1;c++) if(puzzle.obstacle[row][c]) n++;
+      return n;
+    };
+    const topCount = countObstacles(topRow);
+    const bottomCount = topRow===bottomRow ? topCount : countObstacles(bottomRow);
+    const useBottom = bottomCount<=topCount;
+
+    const roomName = puzzle.roomList[idx];
+    const roomCode = computeRoomCode(roomName);
+
+    const width = (rect.c1-rect.c0)*cellPx + (rect.c1-rect.c0-1)*gap;
+    const left = rect.c0*(cellPx+gap);
+    const top = useBottom
+      ? bottomRow*(cellPx+gap) + cellPx - labelH
+      : topRow*(cellPx+gap);
+
+    // Comprobar colisión con etiquetas ya colocadas
+    let useText = roomName;
+    for (const p of placedLabels) {
+      // Verificar si se solapan en los ejes X e Y
+      const overlapX = left < (p.left + p.width) && (left + width) > p.left;
+      const overlapY = top < (p.top + p.height) && (top + labelH) > p.top;
+
+      if (overlapX && overlapY) {
+        // Hay solapamiento: abreviar la que tenga el nombre más largo
+        if (roomName.length > p.text.length) {
+          useText = roomCode;
+        } else {
+          // Si la actual es más corta, actualizamos la anterior en el DOM si es necesario
+          // (aquí optamos por abreviar la actual por simplicidad del flujo)
+          useText = roomCode;
+        }
+      }
+    }
+
+    // Si finalmente usa el acrónimo, recalculamos su longitud visual aproximada o mantenemos la caja
+    const finalText = (useText === roomCode && roomName.length > roomCode.length) ? roomCode : useText;
+
+    const label = document.createElement('div');
+    label.className = 'room-label';
+    label.textContent = finalText;
+    label.style.fontSize = `${Math.max(7, Math.min(10, cellPx*0.22))}px`;
+    label.style.left = `${left}px`;
+    label.style.top = `${top}px`;
+    label.style.width = `${width}px`;
+    label.style.height = `${labelH}px`;
+    label.style.lineHeight = `${labelH}px`;
+    board.appendChild(label);
+
+    placedLabels.push({ left, top, width, height: labelH, idx, text: roomName });
+  });
+}
+function hexAlpha(hex, alpha){
+  const n = parseInt(hex.slice(1),16);
+  const r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function startHold(r,c,div,e){
+  clearHold();
+  holdTarget = {r,c,div};
+  div.classList.add('holding');
+  holdTimer = setTimeout(()=>{
+    div.classList.remove('holding');
+    const key = `${r},${c}`;
+    if(mode==='place' && activeSuspect && armedCell===key){
+      suppressClick = true;
+      setTimeout(()=>{ suppressClick=false; }, 0);
+      lockCell(r,c);
+    } else {
+      // not armed yet: tap once first, then hold this same cell to confirm
+      div.classList.add('shake');
+      setTimeout(()=>div.classList.remove('shake'), 400);
+    }
+    holdTimer = null;
+    holdTarget = null;
+    dragArmed = null;
+  }, HOLD_MS);
+  dragArmed = {r, c, downX: e.clientX, downY: e.clientY};
+}
+function endHold(){
+  if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
+  if(holdTarget){ holdTarget.div.classList.remove('holding'); holdTarget=null; }
+}
+function clearHold(){ endHold(); }
+
+// ---- Drag-paint: swipe across several cells to mark the active
+// suspect/victim (or an X, in "Marcar" mode) in every cell the finger
+// passes over, instead of tapping one by one. ----
+function computeDragAction(key){
+  if(mode==='cross'){
+    return userCross.has(key) ? 'remove-cross' : 'add-cross';
+  }
+  if(!activeSuspect) return null;
+  const notes = userNotes.get(key);
+  return (notes && notes.has(activeSuspect)) ? 'remove-note' : 'add-note';
+}
+function applyDragToCell(r,c){
+  const key = `${r},${c}`;
+  if(dragVisited.has(key)) return;
+  dragVisited.add(key);
+  if(userLocked.has(key)) return; // locked cells are untouched by drag-paint
+  if(dragAction==='add-cross'){ userNotes.delete(key); userCross.add(key); }
+  else if(dragAction==='remove-cross'){ userCross.delete(key); }
+  else if(dragAction==='add-note'){
+    userCross.delete(key);
+    const notes = userNotes.get(key) || new Set();
+    notes.add(activeSuspect);
+    userNotes.set(key, notes);
+  } else if(dragAction==='remove-note'){
+    const notes = userNotes.get(key);
+    if(notes){ notes.delete(activeSuspect); if(notes.size===0) userNotes.delete(key); else userNotes.set(key,notes); }
+  }
+  renderBoard();
+}
+document.addEventListener('pointermove', (e)=>{
+  if(!dragArmed) return;
+  e.preventDefault(); // stop native scroll/selection from hijacking the gesture, from the very first pixel
+  if(!dragActive){
+    const dx = e.clientX-dragArmed.downX, dy = e.clientY-dragArmed.downY;
+    if(Math.hypot(dx,dy) < DRAG_THRESHOLD) return;
+    // movement exceeded threshold: this is a drag-paint gesture, not a hold
+    clearHold();
+    dragActive = true;
+    dragVisited = new Set();
+    takeSnapshot();
+    dragAction = computeDragAction(`${dragArmed.r},${dragArmed.c}`);
+    if(dragAction) applyDragToCell(dragArmed.r, dragArmed.c);
+  }
+  if(!dragAction) return;
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const cellDiv = el && el.closest && el.closest('.cell');
+  const key = cellDiv && cellDiv.dataset.key;
+  if(!key) return;
+  const [r,c] = key.split(',').map(Number);
+  applyDragToCell(r,c);
+}, {passive:false});
+document.addEventListener('pointerup', ()=>{
+  if(dragActive){
+    suppressClick = true;
+    setTimeout(()=>{ suppressClick=false; }, 0);
+  }
+  dragActive = false;
+  dragVisited = null;
+  dragAction = null;
+  dragArmed = null;
+  endHold();
+});
+document.addEventListener('pointercancel', ()=>{
+  dragActive = false;
+  dragVisited = null;
+  dragAction = null;
+  dragArmed = null;
+  endHold();
+});
+
+function takeSnapshot(){
+  undoStack.push({
+    notes: new Map([...userNotes].map(([k,v])=>[k, new Set(v)])),
+    cross: new Set(userCross),
+    locked: new Map(userLocked)
+  });
+  if(undoStack.length > UNDO_MAX) undoStack.shift();
+  const undoBtn = document.getElementById('undoBtn');
+  if(undoBtn) undoBtn.disabled = false;
+}
+
+// A suspect (or the victim) can only be definitively locked into ONE cell.
+// If they were already locked elsewhere, remove that old lock first.
+function clearExistingLockOf(name){
+  for(const [k,v] of [...userLocked.entries()]){
+    if(v===name) userLocked.delete(k);
+  }
+}
+
+function lockCell(r,c){
+  if(mode!=='place' || !activeSuspect) return;
+  const key = `${r},${c}`;
+  takeSnapshot();
+  if(userLocked.get(key)===activeSuspect){
+    userLocked.delete(key);
+    armedCell = null;
+    renderBoard();
+    return;
+  }
+  clearExistingLockOf(activeSuspect);
+  userLocked.set(key, activeSuspect);
+  userNotes.delete(key);
+  userCross.delete(key);
+  armedCell = null;
+  for(let cc=0; cc<puzzle.size; cc++){
+    if(cc===c || puzzle.obstacle[r][cc]) continue;
+    const k2 = `${r},${cc}`;
+    if(userLocked.has(k2)) continue;
+    userNotes.delete(k2);
+    userCross.add(k2);
+  }
+  for(let rr=0; rr<puzzle.size; rr++){
+    if(rr===r || puzzle.obstacle[rr][c]) continue;
+    const k2 = `${rr},${c}`;
+    if(userLocked.has(k2)) continue;
+    userNotes.delete(k2);
+    userCross.add(k2);
+  }
+  renderBoard();
+}
+
+function cellClick(r,c){
+  const key = `${r},${c}`;
+  if(userLocked.has(key)) return; // locked cells only change via long-press
+  if(mode==='cross'){
+    takeSnapshot();
+    userNotes.delete(key);
+    if(userCross.has(key)) userCross.delete(key); else userCross.add(key);
+    armedCell = null;
+  } else {
+    if(!activeSuspect) return;
+    takeSnapshot();
+    userCross.delete(key);
+    const notes = userNotes.get(key) || new Set();
+    if(notes.has(activeSuspect)) notes.delete(activeSuspect); else notes.add(activeSuspect);
+    if(notes.size>0) userNotes.set(key, notes); else userNotes.delete(key);
+    armedCell = key; // tapped once: now ready — hold THIS cell again to confirm the final position
+  }
+  renderBoard();
+}
+
+function selectPerson(name){
+  activeSuspect = name;
+  mode = 'place';
+  document.getElementById('modePlace').classList.add('active');
+  document.getElementById('modeCross').classList.remove('active');
+  renderClues();
+}
+
+document.getElementById('modePlace').onclick=()=>{ mode='place'; document.getElementById('modePlace').classList.add('active'); document.getElementById('modeCross').classList.remove('active'); };
+document.getElementById('modeCross').onclick=()=>{ mode='cross'; armedCell=null; document.getElementById('modeCross').classList.add('active'); document.getElementById('modePlace').classList.remove('active'); renderBoard(); };
+document.getElementById('undoBtn').onclick=()=>{
+  if(undoStack.length===0) return;
+  const prev = undoStack.pop();
+  userNotes = prev.notes;
+  userCross = prev.cross;
+  userLocked = prev.locked;
+  armedCell = null;
+  document.getElementById('undoBtn').disabled = undoStack.length===0;
+  renderBoard();
+};
+
+function avatarFallback(imgEl, name){
+  const isVictim = puzzle.victim && name===puzzle.victim.name;
+  const bg = SUSPECT_COLORS[name] || '#3c5c5c';
+  const label = isVictim ? puzzle.victim.emoji : (SUSPECT_CODES[name]||name.slice(0,2).toUpperCase());
+  const span = document.createElement('span');
+  span.className = 'avatar';
+  span.style.background = bg;
+  span.textContent = label;
+  if(imgEl.parentNode) imgEl.replaceWith(span);
+}
+function createAvatarImg(name){
+  const img = document.createElement('img');
+  img.className = 'avatar avatar-img';
+  img.src = `./Personajes/${name}.png`;
+  img.alt = name;
+  img.onerror = ()=> avatarFallback(img, name);
+  return img;
+}
+
+function renderClues(){
+  const list = document.getElementById('cluesList');
+  list.innerHTML='';
+
+  // Special card for the victim — clues never reveal them directly, but you
+  // still need a way to select them for placement once you've deduced it.
+  const vName = puzzle.victim.name;
+  const vCard = document.createElement('div');
+  vCard.className = 'clue-card' + (activeSuspect===vName ? ' active' : '');
+  const vHeader = document.createElement('div');
+  vHeader.className = 'card-header';
+  vHeader.appendChild(createAvatarImg(vName));
+  const vNameSpan = document.createElement('span');
+  vNameSpan.className = 'card-name';
+  vNameSpan.textContent = vName;
+  vHeader.appendChild(vNameSpan);
+  vCard.appendChild(vHeader);
+  const vLines = document.createElement('div');
+  vLines.className = 'clue-lines';
+  vLines.innerHTML = `<div class="clue-line">La víctima. Tócala para colocarla donde creas que apareció.</div>`;
+  vCard.appendChild(vLines);
+  vCard.onclick = ()=> selectPerson(vName);
+  list.appendChild(vCard);
+
+  // Group each clue under only ONE person: whichever character it refers to
+  // FIRST. So a two-person clue lives on a single card, not duplicated on both.
+  const perPerson = {};
+  puzzle.suspects.forEach(s=> perPerson[s] = []);
+  puzzle.clues.forEach(cl=>{
+    const subjects = cl.subjects || (cl.subject ? [cl.subject] : []);
+    if(subjects.length===0) return;
+    const primary = subjects[0];
+    if(perPerson[primary]) perPerson[primary].push(cl.text);
+  });
+
+  puzzle.suspects.forEach(name=>{
+    const texts = perPerson[name];
+    const d = document.createElement('div');
+    const isActive = activeSuspect===name;
+    d.className = 'clue-card' + (isActive?' active':'');
+    const header = document.createElement('div');
+    header.className = 'card-header';
+    header.appendChild(createAvatarImg(name));
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'card-name';
+    nameSpan.textContent = name;
+    header.appendChild(nameSpan);
+    d.appendChild(header);
+    const lines = document.createElement('div');
+    lines.className = 'clue-lines';
+    lines.innerHTML = texts.length
+      ? texts.map(t=>`<div class="clue-line">${t}</div>`).join('')
+      : `<div class="clue-line clue-line-empty">Sin pistas directas — descártalo por eliminación.</div>`;
+    d.appendChild(lines);
+    d.onclick = ()=> selectPerson(name);
+    list.appendChild(d);
+  });
+}
+
+function renderLegends(){
+  const obEl = document.getElementById('obstacleLegend');
+  obEl.innerHTML = '<strong style="width:100%">Obstáculos:</strong>' + puzzle.mapDef.obstacles.map(o=>`<span>${o}</span>`).join('');
+  const feEl = document.getElementById('featureLegend');
+  feEl.innerHTML = '<strong style="width:100%">Rasgos:</strong>' + puzzle.mapDef.features.map(f=>`<span>${f}</span>`).join('');
+  const roomsEl = document.getElementById('roomsLegend');
+  roomsEl.innerHTML='';
+  puzzle.roomList.forEach((name,i)=>{
+    const chip=document.createElement('span');
+    chip.className='room-chip';
+    chip.style.background = ROOM_COLORS[i%ROOM_COLORS.length];
+    chip.textContent = `${puzzle.roomCodes[i]} — ${name}`;
+    roomsEl.appendChild(chip);
+  });
+}
+
+function lockedPositionOf(name){
+  for(const [key,val] of userLocked.entries()){
+    if(val===name){ const [r,c]=key.split(',').map(Number); return {r,c}; }
+  }
+  return null;
+}
+
+function updateZoomDisplay(){
+  document.getElementById('zoomLevel').textContent = Math.round(boardZoom*100)+'%';
+}
+document.getElementById('zoomInBtn').onclick = ()=>{
+  boardZoom = Math.min(ZOOM_MAX, +(boardZoom+ZOOM_STEP).toFixed(2));
+  updateZoomDisplay();
+  renderBoard();
+};
+document.getElementById('zoomOutBtn').onclick = ()=>{
+  boardZoom = Math.max(ZOOM_MIN, +(boardZoom-ZOOM_STEP).toFixed(2));
+  updateZoomDisplay();
+  renderBoard();
+};
+
+document.getElementById('checkBtn').onclick = ()=>{
+  const fb = document.getElementById('feedback');
+  const allNames = [...puzzle.suspects, puzzle.victim.name];
+  const total = allNames.length;
+  const correct = allNames.filter(n=>{
+    const pos = lockedPositionOf(n);
+    if(!pos) return false;
+    const truth = n===puzzle.victim.name ? puzzle.victimCell : puzzle.solution[n];
+    return pos.r===truth.r && pos.c===truth.c;
+  }).length;
+
+  if(correct===total){
+    clearInterval(timerInterval);
+    showSolvedModal();
+    return;
+  }
+  const missing = allNames.filter(n=>!lockedPositionOf(n));
+  let msg = `<div class="feedback bad">${correct} de ${total} posiciones correctas.`;
+  if(missing.length) msg += ` Aún faltan por fijar: ${missing.join(', ')}.`;
+  msg += `</div>`;
+  fb.innerHTML = msg;
+  askRevealSolution();
+};
+
+function askRevealSolution(){
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="stamp">EXPEDIENTE INCOMPLETO</div>
+        <h2>Algo no cuadra…</h2>
+        <p>Hay errores en tu tablero.<br>¿Quieres que te muestre la solución?</p>
+        <div style="display:flex; gap:10px; margin-top:6px;">
+          <button class="big-btn secondary" id="declineRevealBtn" style="flex:1;">Seguir intentando</button>
+          <button class="big-btn" id="confirmRevealBtn" style="flex:1;">Mostrar solución</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('declineRevealBtn').onclick = ()=>{ root.innerHTML=''; };
+  document.getElementById('confirmRevealBtn').onclick = ()=>{ root.innerHTML=''; revealSolution(); };
+}
+
+function revealSolution(){
+  clearInterval(timerInterval);
+  userNotes = new Map();
+  userCross = new Set();
+  userLocked = new Map();
+  puzzle.suspects.forEach(s=>{
+    const sol = puzzle.solution[s];
+    userLocked.set(`${sol.r},${sol.c}`, s);
+  });
+  userLocked.set(`${puzzle.victimCell.r},${puzzle.victimCell.c}`, puzzle.victim.name);
+  document.getElementById('feedback').innerHTML = '';
+  renderBoard();
+  showSolvedModal(true);
+}
+
+document.getElementById('resetBtn').onclick = ()=>{
+  takeSnapshot();
+  userNotes = new Map();
+  userCross = new Set();
+  userLocked = new Map();
+  armedCell = null;
+  document.getElementById('feedback').innerHTML='';
+  renderBoard();
+};
+
+document.getElementById('backBtn').onclick = ()=>{
+  clearInterval(timerInterval);
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('setup').classList.remove('hidden');
+};
+
+function showSolvedModal(revealed){
+  const room = puzzle.roomList[puzzle.victimRoom];
+  const v = puzzle.victim;
+  const root = document.getElementById('modalRoot');
+  const stamp = revealed ? 'SOLUCIÓN REVELADA' : 'CASO CERRADO';
+  const heading = revealed ? 'Esto es lo que pasó…' : '¡Expediente resuelto!';
+  root.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="stamp">${stamp}</div>
+        <h2>${heading}</h2>
+        <p>${v.name} fue ${v.found} en <strong>${room}</strong>.<br>
+        La única persona a solas con ${v.pronoun} en ese lugar fue<br>
+        <span class="killer-name">${puzzle.killer}</span>.</p>
+        <p style="font-size:12px;color:#6a5f47;">Tiempo empleado: ${document.getElementById('timer').textContent}</p>
+        <button class="big-btn" id="closeModalBtn">Cerrar</button>
+      </div>
+    </div>`;
+  document.getElementById('closeModalBtn').onclick = ()=>{ root.innerHTML=''; markSolvedOnBoard(); };
+}
+
+function markSolvedOnBoard(){
+  const board = document.getElementById('board');
+  const idx = puzzle.victimCell.r*puzzle.size + puzzle.victimCell.c;
+  const cells = board.children;
+  cells[idx].classList.add('victim-reveal');
+  cells[idx].textContent = puzzle.victim.emoji;
+  const kc = puzzle.solution[puzzle.killer];
+  cells[kc.r*puzzle.size+kc.c].classList.add('killer-reveal');
+}
+</script>
+</body>
+</html>

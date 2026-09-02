@@ -379,7 +379,13 @@ body{
 .actions-row .big-btn{font-size:13px; padding:12px;}
 .secondary{background:var(--teal); box-shadow:0 4px 0 #2a4444;}
 .secondary:active{box-shadow:0 1px 0 #2a4444;}
-
+/* Ejemplo: si tu hover usa esto */
+.obstacle:hover .tooltip,
+.obstacle.active-tooltip .tooltip {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
 .feedback{
   text-align:center; padding:10px; border-radius:6px; margin-top:10px; font-weight:700; font-size:13px;
 }
@@ -422,6 +428,7 @@ footer.credits{text-align:center; font-size:11px; color:#665f4d; margin-top:8px;
     box-sizing:border-box;
     overflow:hidden;
   }
+  
   .mobile-top .game-topbar{margin-bottom:8px;}
   .board-zone{flex:1; min-height:0;}
   .mobile-bottom{
@@ -435,7 +442,14 @@ footer.credits{text-align:center; font-size:11px; color:#665f4d; margin-top:8px;
   }
   .mobile-bottom .card,
   .mobile-bottom .board-card{box-shadow:none; padding:0;}
+  .map-container, #map, .sudoku-board {
+        width: 60% !important;
+        max-width: 60% !important;
+        margin: 0 auto !important;
+        box-sizing: border-box;
+    }
 }
+
 </style>
 </head>
 <body>
@@ -1675,6 +1689,41 @@ function markSolvedOnBoard(){
   const kc = puzzle.solution[puzzle.killer];
   cells[kc.r*puzzle.size+kc.c].classList.add('killer-reveal');
 }
+document.addEventListener("DOMContentLoaded", () => {
+    // Selecciona las casillas que contengan obstáculos (ajusta la clase si usas otra, ej: '.obstacle' o '[data-obstacle]')
+    const obstacleCells = document.querySelectorAll('.obstacle, [data-obstacle]');
+
+    obstacleCells.forEach(cell => {
+        let pressTimer = null;
+
+        // Al iniciar el toque en móvil
+        cell.addEventListener('touchstart', (e) => {
+            // Prevenir comportamientos por defecto extraños (como zoom o scroll inmediato)
+            pressTimer = setTimeout(() => {
+                // Añade la clase que activa el tooltip/nombre del obstáculo
+                cell.classList.add('active-tooltip');
+                
+                // Vibración háptica leve si el móvil lo soporta (opcional y muy intuitivo)
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }, 500); // 500 milisegundos de pulsación mantenida
+        }, { passive: true });
+
+        // Si el usuario mueve el dedo o levanta antes de tiempo, se cancela
+        cell.addEventListener('touchend', () => {
+            clearTimeout(pressTimer);
+            // Ocultar el tooltip al cabo de 2 segundos de soltarlo
+            setTimeout(() => {
+                cell.classList.remove('active-tooltip');
+            }, 2000);
+        });
+
+        cell.addEventListener('touchmove', () => {
+            clearTimeout(pressTimer);
+        });
+    });
+});
 </script>
 </body>
 </html>

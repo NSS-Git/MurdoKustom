@@ -446,7 +446,8 @@
       z-index: 4;
       pointer-events: none;
       font-weight: 800;
-      text-align: center;
+      text-align: left;
+      padding-left: 2px;
       letter-spacing: .02em;
       color: #fff;
       white-space: nowrap;
@@ -481,7 +482,7 @@
     .suspect-label {
       position: relative;
       z-index: 2;
-      font-size: 13px;
+      font-size: 16px;
     }
 
     .notes-grid {
@@ -497,7 +498,7 @@
     }
 
     .note-chip {
-      font-size: 7px;
+      font-size: 10px;
       font-weight: 800;
       line-height: 1;
       color: var(--text-dark);
@@ -1028,6 +1029,7 @@
       <h1>Murdokustom</h1>
     </div>
 
+
     <!-- SETUP -->
     <div id="setup" class="card">
       <div class="section-title">1 · Elige el escenario</div>
@@ -1055,49 +1057,52 @@
             <div class="board" id="board"></div>
           </div>
           <div class="map-tools-bar">
+            <div class="pan-controls">
+              <button class="pan-btn" id="panLeftBtn" aria-label="Mover izquierda">←</button>
+              <div style="display:flex; flex-direction:column; gap:2px;">
+                <button class="pan-btn" id="panUpBtn" aria-label="Mover arriba">↑</button>
+                <button class="pan-btn" id="panDownBtn" aria-label="Mover abajo">↓</button>
+              </div>
+              <button class="pan-btn" id="panRightBtn" aria-label="Mover derecha">→</button>
+              <button class="zoom-btn" id="centerFitBtn" title="Centrar y ajustar al dispositivo"
+                style="font-size:14px; margin-left:6px;">🎯</button>
+            </div>
             <div class="zoom-controls">
               <button class="zoom-btn" id="zoomOutBtn" aria-label="Reducir mapa">−</button>
               <span class="zoom-level" id="zoomLevel">100%</span>
               <button class="zoom-btn" id="zoomInBtn" aria-label="Aumentar mapa">+</button>
             </div>
-            <div class="pan-controls">
-              <button class="pan-btn" id="panUpBtn" aria-label="Mover arriba">⬆️</button>
-              <button class="pan-btn" id="panLeftBtn" aria-label="Mover izquierda">⬅️</button>
-              <button class="pan-btn" id="panRightBtn" aria-label="Mover derecha">➡️</button>
-              <button class="pan-btn" id="panDownBtn" aria-label="Mover abajo">⬇️</button>
-            </div>
           </div>
         </div>
       </div>
+
+      <div class="mobile-bottom" id="mobileBottom">
+        <div class="mode-row">
+          <button class="mode-btn active" id="modePlace">✎ Colocar</button>
+          <button class="mode-btn" id="modeCross">✕ Marcar</button>
+          <button class="mode-btn" id="undoBtn" disabled>↩ Deshacer</button>
+        </div>
+        <div class="hint-text">Toca la tarjeta de un personaje (o de la víctima) para seleccionarlo, y luego toca el
+          mapa para colocarlo · Toque corto = anotación (o arrastra el dedo por varias casillas) · Para fijar la
+          posición definitiva: toca primero la casilla y luego mantenla pulsada</div>
+        <div id="feedback"></div>
+
+        <div class="section-title" style="margin-top:16px;">Pistas del expediente</div>
+        <div id="cluesList"></div>
+
+        <div class="actions-row">
+          <button class="big-btn secondary" id="checkBtn">Comprobar solución</button>
+          <button class="big-btn" id="resetBtn">Reiniciar tablero</button>
+        </div>
+
+        <div class="section-title" style="margin-top:16px;">Referencia del plano</div>
+        <div class="legend" id="obstacleLegend"></div>
+        <div class="legend" id="featureLegend"></div>
+        <div class="rooms-legend" id="roomsLegend"></div>
+      </div>
     </div>
 
-    <div class="mobile-bottom" id="mobileBottom">
-      <div class="mode-row">
-        <button class="mode-btn active" id="modePlace">✎ Colocar</button>
-        <button class="mode-btn" id="modeCross">✕ Marcar</button>
-        <button class="mode-btn" id="undoBtn" disabled>↩ Deshacer</button>
-      </div>
-      <div class="hint-text">Toca la tarjeta de un personaje (o de la víctima) para seleccionarlo, y luego toca el
-        mapa para colocarlo · Toque corto = anotación (o arrastra el dedo por varias casillas) · Para fijar la
-        posición definitiva: toca primero la casilla y luego mantenla pulsada</div>
-      <div id="feedback"></div>
-
-      <div class="section-title" style="margin-top:16px;">Pistas del expediente</div>
-      <div id="cluesList"></div>
-
-      <div class="actions-row">
-        <button class="big-btn secondary" id="checkBtn">Comprobar solución</button>
-        <button class="big-btn" id="resetBtn">Reiniciar tablero</button>
-      </div>
-
-      <div class="section-title" style="margin-top:16px;">Referencia del plano</div>
-      <div class="legend" id="obstacleLegend"></div>
-      <div class="legend" id="featureLegend"></div>
-      <div class="rooms-legend" id="roomsLegend"></div>
-    </div>
-  </div>
-
-  <footer class="credits">Murdokustom</footer>
+    <footer class="credits">Murdokustom</footer>
   </div>
 
   <div id="modalRoot"></div>
@@ -1153,8 +1158,8 @@
       {
         id: "dental", emoji: "🦷", name: "Moradent",
         desc: "",
-        rooms: ["la sala de espera", "la consulta", "el baño", "el salon de Gema", "el laboratorio", "el almacén"],
-        obstacles: ["🌼 la planta", "☢️ la máquina de rayos X", "🗄️ el archivador", "🛎️ el mostrador de recepción", "✂ las tijeras (de D.C)", "📦 la caja de kemphor"],
+        rooms: ["la sala de espera", "la consulta", "el baño", "el salon de Gema", "el laboratorio", "el almacén", "el recibidor"],
+        obstacles: ["🎃 manta de stranger things", "🛕 un buddha","☢️ la máquina de rayos X", "🗄️ el archivador", "🔱 un cuerno de ciervo", "✂ las tijeras (de D.C)", "📦 la caja de kemphor"],
         features: ["🗒 los post-its del hada", "🪑 la silla", "🖼️ el póster de Gongo", "🦯 el látigo del señor Moles", "🔬 el microscopio del señor Moles", "🛏️ la camilla"]
       },
       {
@@ -1230,11 +1235,91 @@
       el.onclick = () => { selectedDiff = d;[...diffGrid.children].forEach(c => c.classList.remove('selected')); el.classList.add('selected'); checkReady(); };
       diffGrid.appendChild(el);
     });
-
     const roster = document.getElementById('roster');
-    SUSPECTS.forEach(s => { const c = document.createElement('span'); c.className = 'chip'; c.textContent = s; roster.appendChild(c); });
-    VICTIMS.forEach(v => { const vc = document.createElement('span'); vc.className = 'chip'; vc.textContent = v.name; roster.appendChild(vc); });
 
+    // Renderizar sospechosos
+    SUSPECTS.forEach(s => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip';
+      chip.textContent = s;
+      chip.style.cursor = 'pointer';
+      chip.onclick = () => showCharacterModal(s, 'SOSPECHOSO');
+      roster.appendChild(chip);
+    });
+
+    // Renderizar víctimas (convertidas en botones interactivos)
+    VICTIMS.forEach(v => {
+      const name = typeof v === 'object' ? v.name : v;
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip victim-chip';
+      chip.textContent = name;
+      chip.style.cursor = 'pointer';
+      chip.onclick = () => showCharacterModal(name, 'VÍCTIMA');
+      roster.appendChild(chip);
+    });
+
+    function showCharacterModal(name, roleType = 'SOSPECHOSO') {
+      const modalRoot = document.getElementById('modalRoot');
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+
+      const stamp = document.createElement('div');
+      stamp.className = 'stamp';
+
+      // Define aquí los nombres femeninos de tu juego o ajusta la regla
+      const femaleCharacters = ['Mocca'];
+      const isFemale = femaleCharacters.includes(name) || name.toLowerCase().endsWith('a');
+
+      if (roleType === 'VÍCTIMA') {
+        stamp.textContent = 'VÍCTIMA';
+      } else {
+        stamp.textContent = isFemale ? 'SOSPECHOSA' : 'SOSPECHOSO';
+      }
+
+      const img = document.createElement('img');
+      img.src = `./Personajes/${name}.png`;
+      img.alt = name;
+      img.style.width = '110px';
+      img.style.height = '110px';
+      img.style.borderRadius = '50%';
+      img.style.objectFit = 'cover';
+      img.style.border = '3px solid var(--brass)';
+      img.style.margin = '10px auto 14px';
+      img.style.display = 'block';
+      img.onerror = () => {
+        img.style.display = 'none';
+      };
+
+      const h2 = document.createElement('h2');
+      h2.textContent = name;
+
+      const p = document.createElement('p');
+      if (roleType === 'VÍCTIMA') {
+        p.textContent = `Expediente oficial de ${name}. La posible víctima del caso.`;
+      } else {
+        p.textContent = `Expediente oficial de ${name}. Analiza sus pistas en el tablero.`;
+      }
+
+      const btn = document.createElement('button');
+      btn.className = 'big-btn';
+      btn.textContent = 'Cerrar expediente';
+      btn.style.marginTop = '10px';
+      btn.onclick = () => modalRoot.innerHTML = '';
+
+      modal.appendChild(stamp);
+      modal.appendChild(img);
+      modal.appendChild(h2);
+      modal.appendChild(p);
+      modal.appendChild(btn);
+      overlay.appendChild(modal);
+      modalRoot.innerHTML = '';
+      modalRoot.appendChild(overlay);
+    }
     // Esta es la función que se había borrado accidentalmente
     function checkReady() {
       if (selectedMap && selectedDiff) {
@@ -1360,8 +1445,9 @@
       const { roomGrid, roomList, roomRects } = buildRooms(size, mapDef.rooms);
 
       // Listas de objetos únicos obligatorios (con sus emojis exactos)
-      const GUARANTEED_OBS = ["👧🏽 la niña mala", "🛎️ mostrador de recepción", "✂ tijeras (de D.C)", "🦽 barbie negra"];
-      const GUARANTEED_FEAT = ["📋 despido de maite", "🖼️ póster de Gongo", "🔬 microscopio del señor Moles"];
+      const GUARANTEED_OBS = ["👧🏽 la niña mala", "👩🏻 Maite", "🛎️ mostrador de recepción", "✂ tijeras (de D.C)", "🦽 barbie negra", "🦕 Stifen", "👱🏻‍♀️ Ana", "🎃 manta de stranger things", "✂ las tijeras (de D.C)"];
+      const GUARANTEED_FEAT = ["📋 despido de maite", "🖼️ póster de Gongo", "🔬 microscopio del señor Moles",  "📷 la polaroid", "👽 el smiski", "🦯 el látigo del señor Moles"];
+
 
       // --- OBSTÁCULOS ---
       const obstacle = Array.from({ length: size }, () => Array(size).fill(null));
@@ -1797,72 +1883,145 @@
       }
       renderRoomLabels(cellPx);
     }
-    function renderRoomLabels(cellPx) {
-      const board = document.getElementById('board');
-      board.style.position = 'relative';
-      const gap = 3;
-      const labelH = Math.max(11, Math.min(14, cellPx * 0.3));
+function renderRoomLabels(cellPx) {
+  const board = document.getElementById('board');
+  board.style.position = 'relative';
+  const gap = 3;
+  const labelH = Math.max(11, Math.min(14, cellPx * 0.3));
 
-      // Array para registrar las cajas ocupadas por las etiquetas {left, top, width, height, idx, text}
-      const placedLabels = [];
+  // Detectar automáticamente cualquier matriz 2D dentro del objeto puzzle
+  let boardMatrix = null;
+  const candidateKeys = ['board', 'grid', 'map', 'cells', 'roomGrid', 'roomMap', 'matrix', 'boardMatrix'];
+  for (const key of candidateKeys) {
+    if (puzzle[key] && Array.isArray(puzzle[key]) && Array.isArray(puzzle[key][0])) {
+      boardMatrix = puzzle[key];
+      break;
+    }
+  }
+  if (!boardMatrix) {
+    for (const key in puzzle) {
+      if (Array.isArray(puzzle[key]) && puzzle[key].length > 0 && Array.isArray(puzzle[key][0])) {
+        boardMatrix = puzzle[key];
+        break;
+      }
+    }
+  }
 
-      puzzle.roomRects.forEach((rect, idx) => {
-        const topRow = rect.r0, bottomRow = rect.r1 - 1;
-        const countObstacles = (row) => {
-          let n = 0;
-          for (let c = rect.c0; c < rect.c1; c++) if (puzzle.obstacle[row][c]) n++;
-          return n;
-        };
-        const topCount = countObstacles(topRow);
-        const bottomCount = topRow === bottomRow ? topCount : countObstacles(bottomRow);
-        const useBottom = bottomCount <= topCount;
+  // 1. Recopilar datos y calcular posiciones físicas reales de todas las etiquetas
+  const labelsData = puzzle.roomRects.map((rect, idx) => {
+    const roomName = puzzle.roomList[idx];
+    const roomCode = computeRoomCode(roomName);
 
-        const roomName = puzzle.roomList[idx];
-        const roomCode = computeRoomCode(roomName);
+    let bestRow = -1;
+    let bestCol = -1;
 
-        const width = (rect.c1 - rect.c0) * cellPx + (rect.c1 - rect.c0 - 1) * gap;
-        const left = rect.c0 * (cellPx + gap);
-        const top = useBottom
-          ? bottomRow * (cellPx + gap) + cellPx - labelH
-          : topRow * (cellPx + gap);
-
-        // Comprobar colisión con etiquetas ya colocadas
-        let useText = roomName;
-        for (const p of placedLabels) {
-          // Verificar si se solapan en los ejes X e Y
-          const overlapX = left < (p.left + p.width) && (left + width) > p.left;
-          const overlapY = top < (p.top + p.height) && (top + labelH) > p.top;
-
-          if (overlapX && overlapY) {
-            // Hay solapamiento: abreviar la que tenga el nombre más largo
-            if (roomName.length > p.text.length) {
-              useText = roomCode;
-            } else {
-              // Si la actual es más corta, actualizamos la anterior en el DOM si es necesario
-              // (aquí optamos por abreviar la actual por simplicidad del flujo)
-              useText = roomCode;
+    if (boardMatrix) {
+      for (let r = rect.r1 - 1; r >= rect.r0; r--) {
+        let foundInRow = false;
+        for (let c = rect.c0; c < rect.c1; c++) {
+          if (boardMatrix[r] && boardMatrix[r][c] !== undefined) {
+            const val = boardMatrix[r][c];
+            if (
+              val === idx || 
+              val === (idx + 1) || 
+              val === roomName || 
+              val === roomCode ||
+              (val && (val.index === idx || val.id === idx || val.room === idx))
+            ) {
+              foundInRow = true;
+              break;
             }
           }
         }
+        if (foundInRow) {
+          bestRow = r;
+          break;
+        }
+      }
 
-        // Si finalmente usa el acrónimo, recalculamos su longitud visual aproximada o mantenemos la caja
-        const finalText = (useText === roomCode && roomName.length > roomCode.length) ? roomCode : useText;
-
-        const label = document.createElement('div');
-        label.className = 'room-label';
-        label.textContent = finalText;
-        label.style.fontSize = `${Math.max(7, Math.min(10, cellPx * 0.22))}px`;
-        label.style.left = `${left}px`;
-        label.style.top = `${top}px`;
-        label.style.width = `${width}px`;
-        label.style.height = `${labelH}px`;
-        label.style.lineHeight = `${labelH}px`;
-        board.appendChild(label);
-
-        placedLabels.push({ left, top, width, height: labelH, idx, text: roomName });
-      });
+      if (bestRow !== -1) {
+        for (let c = rect.c0; c < rect.c1; c++) {
+          if (boardMatrix[bestRow] && boardMatrix[bestRow][c] !== undefined) {
+            const val = boardMatrix[bestRow][c];
+            if (
+              val === idx || 
+              val === (idx + 1) || 
+              val === roomName || 
+              val === roomCode ||
+              (val && (val.index === idx || val.id === idx || val.room === idx))
+            ) {
+              bestCol = c;
+              break;
+            }
+          }
+        }
+      }
     }
-    function hexAlpha(hex, alpha) {
+
+    if (bestRow === -1) bestRow = rect.r1 - 1;
+    if (bestCol === -1) bestCol = rect.c0;
+
+    const width = (rect.c1 - bestCol) * cellPx + (rect.c1 - bestCol - 1) * gap;
+    const left = bestCol * (cellPx + gap);
+    const top = bestRow * (cellPx + gap) + (cellPx - labelH);
+
+    let useAcronym = roomName.length > 15;
+
+    return {
+      idx,
+      roomName,
+      roomCode,
+      left,
+      top,
+      width,
+      height: labelH,
+      useAcronym
+    };
+  });
+
+  // 2. Resolver colisiones globalmente: si colisionan, la etiqueta situada MÁS A LA IZQUIERDA pasa automáticamente a siglas
+  let changed = true;
+  let iterations = 0;
+  while (changed && iterations < 15) {
+    changed = false;
+    iterations++;
+    for (let i = 0; i < labelsData.length; i++) {
+      for (let j = i + 1; j < labelsData.length; j++) {
+        const l1 = labelsData[i];
+        const l2 = labelsData[j];
+
+        const overlapX = l1.left < (l2.left + l2.width) && (l1.left + l1.width) > l2.left;
+        const overlapY = l1.top < (l2.top + l2.height) && (l1.top + l1.height) > l2.top;
+
+        if (overlapX && overlapY) {
+          const leftLabel = l1.left <= l2.left ? l1 : l2;
+          
+          if (!leftLabel.useAcronym) {
+            leftLabel.useAcronym = true;
+            changed = true;
+          }
+        }
+      }
+    }
+  }
+
+  // 3. Renderizar definitivamente al DOM
+  labelsData.forEach(data => {
+    const finalText = data.useAcronym ? data.roomCode : data.roomName;
+
+    const label = document.createElement('div');
+    label.className = 'room-label';
+    label.textContent = finalText;
+    label.style.fontSize = `${Math.max(9, cellPx * 0.32)}px`;
+    label.style.left = `${data.left}px`;
+    label.style.top = `${data.top}px`;
+    label.style.width = `${data.width}px`;
+    label.style.height = `${data.height}px`;
+    label.style.lineHeight = `${data.height}px`;
+    board.appendChild(label);
+  });
+} 
+function hexAlpha(hex, alpha) {
       const n = parseInt(hex.slice(1), 16);
       const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
       return `rgba(${r},${g},${b},${alpha})`;
@@ -1925,32 +2084,32 @@
       }
       renderBoard();
     }
-    document.addEventListener('pointermove', (e) => {
-      if (!dragArmed) return;
+    /*document.addEventListener('pointermove', (e)=>{
+      if(!dragArmed) return;
       e.preventDefault(); // stop native scroll/selection from hijacking the gesture, from the very first pixel
-      if (!dragActive) {
-        const dx = e.clientX - dragArmed.downX, dy = e.clientY - dragArmed.downY;
-        if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      if(!dragActive){
+        const dx = e.clientX-dragArmed.downX, dy = e.clientY-dragArmed.downY;
+        if(Math.hypot(dx,dy) < DRAG_THRESHOLD) return;
         // movement exceeded threshold: this is a drag-paint gesture, not a hold
         clearHold();
         dragActive = true;
         dragVisited = new Set();
         takeSnapshot();
         dragAction = computeDragAction(`${dragArmed.r},${dragArmed.c}`);
-        if (dragAction) applyDragToCell(dragArmed.r, dragArmed.c);
+        if(dragAction) applyDragToCell(dragArmed.r, dragArmed.c);
       }
-      if (!dragAction) return;
+      if(!dragAction) return;
       const el = document.elementFromPoint(e.clientX, e.clientY);
       const cellDiv = el && el.closest && el.closest('.cell');
       const key = cellDiv && cellDiv.dataset.key;
-      if (!key) return;
-      const [r, c] = key.split(',').map(Number);
-      applyDragToCell(r, c);
-    }, { passive: false });
-    document.addEventListener('pointerup', () => {
-      if (dragActive) {
+      if(!key) return;
+      const [r,c] = key.split(',').map(Number);
+      applyDragToCell(r,c);
+    }, {passive:false});
+    document.addEventListener('pointerup', ()=>{
+      if(dragActive){
         suppressClick = true;
-        setTimeout(() => { suppressClick = false; }, 0);
+        setTimeout(()=>{ suppressClick=false; }, 0);
       }
       dragActive = false;
       dragVisited = null;
@@ -1958,13 +2117,13 @@
       dragArmed = null;
       endHold();
     });
-    document.addEventListener('pointercancel', () => {
+    document.addEventListener('pointercancel', ()=>{
       dragActive = false;
       dragVisited = null;
       dragAction = null;
       dragArmed = null;
       endHold();
-    });
+    });*/
 
     function takeSnapshot() {
       undoStack.push({
@@ -2076,78 +2235,61 @@
       img.onerror = () => avatarFallback(img, name);
       return img;
     }
-    function showCharacterModal(name) {
-      const root = document.getElementById('modalRoot');
-      root.innerHTML = `
-        <div class="modal-overlay" onclick="document.getElementById('modalRoot').innerHTML = ''">
-          <div class="modal" onclick="event.stopPropagation()" style="text-align: center;">
-            <h2>${name}</h2>
-            <div style="margin: 15px 0;">
-              <img src="./Personajes/${name}.png" alt="${name}" style="max-width: 100%; max-height: 280px; border-radius: 8px; object-fit: contain;" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\\'padding: 40px; background: #f0eae1; border-radius: 8px; color: #6a5f47;\\'>Imagen no disponible</div>'">
-            </div>
-            <button class="big-btn" onclick="document.getElementById('modalRoot').innerHTML = ''">Cerrar</button>
-          </div>
-        </div>`;
-    }
 
     function renderClues() {
       const list = document.getElementById('cluesList');
-      if (!list) return;
       list.innerHTML = '';
 
-      // Unir sospechosos y la víctima en una sola lista genérica sin diferenciarlos
-      const allCharacters = [...(puzzle.suspects || [])];
-      if (puzzle.victim && puzzle.victim.name && !allCharacters.includes(puzzle.victim.name)) {
-        allCharacters.push(puzzle.victim.name);
-      }
+      // Special card for the victim — clues never reveal them directly, but you
+      // still need a way to select them for placement once you've deduced it.
+      const vName = puzzle.victim.name;
+      const vCard = document.createElement('div');
+      vCard.className = 'clue-card' + (activeSuspect === vName ? ' active' : '');
+      const vHeader = document.createElement('div');
+      vHeader.className = 'card-header';
+      vHeader.appendChild(createAvatarImg(vName));
+      const vNameSpan = document.createElement('span');
+      vNameSpan.className = 'card-name';
+      vNameSpan.textContent = vName;
+      vHeader.appendChild(vNameSpan);
+      vCard.appendChild(vHeader);
+      const vLines = document.createElement('div');
+      vLines.className = 'clue-lines';
+      vLines.innerHTML = `<div class="clue-line">La víctima. Tócala para colocarla donde creas que apareció.</div>`;
+      vCard.appendChild(vLines);
+      vCard.onclick = () => selectPerson(vName);
+      list.appendChild(vCard);
 
-      // Agrupar pistas por personaje
+      // Group each clue under only ONE person: whichever character it refers to
+      // FIRST. So a two-person clue lives on a single card, not duplicated on both.
       const perPerson = {};
-      allCharacters.forEach(s => perPerson[s] = []);
+      puzzle.suspects.forEach(s => perPerson[s] = []);
+      puzzle.clues.forEach(cl => {
+        const subjects = cl.subjects || (cl.subject ? [cl.subject] : []);
+        if (subjects.length === 0) return;
+        const primary = subjects[0];
+        if (perPerson[primary]) perPerson[primary].push(cl.text);
+      });
 
-      if (puzzle.clues) {
-        puzzle.clues.forEach(cl => {
-          const subjects = cl.subjects || (cl.subject ? [cl.subject] : []);
-          if (subjects.length === 0) return;
-          const primary = subjects[0];
-          if (perPerson[primary]) perPerson[primary].push(cl.text);
-        });
-      }
-
-      // Renderizar a todos los personajes por igual
-      allCharacters.forEach(name => {
-        const texts = perPerson[name] || [];
+      puzzle.suspects.forEach(name => {
+        const texts = perPerson[name];
         const d = document.createElement('div');
         const isActive = activeSuspect === name;
         d.className = 'clue-card' + (isActive ? ' active' : '');
-
         const header = document.createElement('div');
         header.className = 'card-header';
-
-        const avatarImg = createAvatarImg(name);
-        avatarImg.style.cursor = 'pointer';
-        avatarImg.title = 'Haz clic para ver la imagen';
-        avatarImg.onclick = (e) => {
-          e.stopPropagation(); // Evita que se seleccione el personaje al querer ver la foto
-          showCharacterModal(name);
-        };
-        header.appendChild(avatarImg);
-
+        header.appendChild(createAvatarImg(name));
         const nameSpan = document.createElement('span');
         nameSpan.className = 'card-name';
         nameSpan.textContent = name;
         header.appendChild(nameSpan);
-
         d.appendChild(header);
-
         const lines = document.createElement('div');
         lines.className = 'clue-lines';
         lines.innerHTML = texts.length
           ? texts.map(t => `<div class="clue-line">${t}</div>`).join('')
           : `<div class="clue-line clue-line-empty">Sin pistas directas — descártalo por eliminación.</div>`;
         d.appendChild(lines);
-
-        // Al hacer clic en la tarjeta (fuera de la foto) se selecciona el personaje
         d.onclick = () => selectPerson(name);
         list.appendChild(d);
       });
@@ -2187,23 +2329,41 @@
       }
     }
 
-    // Lógica para desplazar el mapa con las flechas
-    const scrollStep = 120;
-    const boardWrap = document.getElementById('boardWrap');
+    let initialPinchDist = null;
+    let initialPinchZoom = 1;
 
+    const boardWrap = document.getElementById('boardWrap');
     if (boardWrap) {
-      document.getElementById('panUpBtn').onclick = () => {
-        boardWrap.scrollBy({ top: -scrollStep, behavior: 'smooth' });
-      };
-      document.getElementById('panDownBtn').onclick = () => {
-        boardWrap.scrollBy({ top: scrollStep, behavior: 'smooth' });
-      };
-      document.getElementById('panLeftBtn').onclick = () => {
-        boardWrap.scrollBy({ left: -scrollStep, behavior: 'smooth' });
-      };
-      document.getElementById('panRightBtn').onclick = () => {
-        boardWrap.scrollBy({ left: scrollStep, behavior: 'smooth' });
-      };
+      boardWrap.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          initialPinchDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          initialPinchZoom = boardZoom;
+        }
+      }, { passive: true });
+
+      boardWrap.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && initialPinchDist !== null) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const factor = currentDist / initialPinchDist;
+          let newZoom = initialPinchZoom * factor;
+          if (newZoom < ZOOM_MIN) newZoom = ZOOM_MIN;
+          if (newZoom > ZOOM_MAX) newZoom = ZOOM_MAX;
+          boardZoom = newZoom;
+          updateZoom();
+        }
+      }, { passive: true });
+
+      boardWrap.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) {
+          initialPinchDist = null;
+        }
+      }, { passive: true });
     }
     document.getElementById('zoomInBtn').onclick = () => {
       boardZoom = Math.min(ZOOM_MAX, +(boardZoom + ZOOM_STEP).toFixed(2));
@@ -2310,6 +2470,7 @@
       document.getElementById('closeModalBtn').onclick = () => { root.innerHTML = ''; markSolvedOnBoard(); };
     }
 
+
     function markSolvedOnBoard() {
       const board = document.getElementById('board');
       const idx = puzzle.victimCell.r * puzzle.size + puzzle.victimCell.c;
@@ -2354,6 +2515,37 @@
         });
       });
     });
+
+    const STEP_PAN = 80;
+
+    document.getElementById('panLeftBtn').onclick = () => { if (boardWrap) boardWrap.scrollBy({ left: -STEP_PAN, behavior: 'smooth' }); };
+    document.getElementById('panRightBtn').onclick = () => { if (boardWrap) boardWrap.scrollBy({ left: STEP_PAN, behavior: 'smooth' }); };
+    document.getElementById('panUpBtn').onclick = () => { if (boardWrap) boardWrap.scrollBy({ top: -STEP_PAN, behavior: 'smooth' }); };
+    document.getElementById('panDownBtn').onclick = () => { if (boardWrap) boardWrap.scrollBy({ top: STEP_PAN, behavior: 'smooth' }); };
+
+    document.getElementById('centerFitBtn').onclick = () => {
+      if (!boardWrap || !puzzle) return;
+      const boardEl = document.getElementById('board');
+      if (!boardEl) return;
+
+      // Calcular zoom para ajustar al ancho y alto del contenedor
+      const wrapW = boardWrap.clientWidth - 20;
+      const wrapH = boardWrap.clientHeight - 20;
+      const boardW = boardEl.scrollWidth || (puzzle.size * 45);
+      const boardH = boardEl.scrollHeight || (puzzle.size * 45);
+
+      const scaleW = wrapW / boardW;
+      const scaleH = wrapH / boardH;
+      let bestScale = Math.min(scaleW, scaleH, 1.4);
+      bestScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, bestScale));
+
+      boardZoom = bestScale;
+      updateZoom();
+
+      // Centrar scroll
+      boardWrap.scrollLeft = (boardEl.scrollWidth * boardZoom - wrapW) / 2;
+      boardWrap.scrollTop = (boardEl.scrollHeight * boardZoom - wrapH) / 2;
+    };
   </script>
 </body>
 

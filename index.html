@@ -216,7 +216,15 @@ body{
   display:flex; flex-direction:column; gap:8px;
   flex:1; min-height:0;
 }
-.board-wrap{overflow:auto; padding-bottom:4px; flex:1; min-height:0;}
+.board-wrap {
+  overflow: auto; 
+  padding: 20px 4px; 
+  flex: 1; 
+  min-height: 0; 
+  touch-action: pan-x pan-y;
+  position: relative;
+}
+
 .zoom-controls{display:flex; align-items:center; justify-content:center; gap:12px; flex-shrink:0;}
 .zoom-btn{
   width:34px; height:34px; border-radius:50%; border:2px solid var(--brass);
@@ -225,11 +233,14 @@ body{
 }
 .zoom-btn:active{background:var(--brass); color:#fff;}
 .zoom-level{font-family:'Special Elite',monospace; font-size:12px; color:#6a5f47; min-width:42px; text-align:center;}
-.board{
-  display:grid;
-  gap:3px;
-  margin:0 auto;
-  width:max-content;
+
+.board {
+  display: grid;
+  gap: 3px;
+  margin: 0 auto;
+  width: max-content;
+  transform-origin: top center;
+  transition: transform 0.05s ease-out;
 }
 .cell{
   display:flex; align-items:center; justify-content:center;
@@ -483,7 +494,9 @@ footer.credits{text-align:center; font-size:11px; color:#665f4d; margin-top:8px;
       </div>
 
       <div class="board-zone">
-        <div class="board-wrap"><div class="board" id="board"></div></div>
+        <div class="board-wrap" id="boardWrap">
+  <div class="board" id="board"></div>
+</div>
         <div class="zoom-controls">
           <button class="zoom-btn" id="zoomOutBtn" aria-label="Reducir mapa">−</button>
           <span class="zoom-level" id="zoomLevel">100%</span>
@@ -1574,6 +1587,50 @@ function lockedPositionOf(name){
 
 function updateZoomDisplay(){
   document.getElementById('zoomLevel').textContent = Math.round(boardZoom*100)+'%';
+}
+function updateZoom() {
+  document.getElementById('zoomLevel').textContent = Math.round(boardZoom * 100) + '%';
+  const board = document.getElementById('board');
+  if(board) {
+    board.style.transform = `scale(${boardZoom})`;
+  }
+}
+
+let initialPinchDist = null;
+let initialPinchZoom = 1;
+
+const boardWrap = document.getElementById('boardWrap');
+if(boardWrap) {
+  boardWrap.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      initialPinchDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      initialPinchZoom = boardZoom;
+    }
+  }, { passive: true });
+
+  boardWrap.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2 && initialPinchDist !== null) {
+      const currentDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const factor = currentDist / initialPinchDist;
+      let newZoom = initialPinchZoom * factor;
+      if (newZoom < ZOOM_MIN) newZoom = ZOOM_MIN;
+      if (newZoom > ZOOM_MAX) newZoom = ZOOM_MAX;
+      boardZoom = newZoom;
+      updateZoom();
+    }
+  }, { passive: true });
+
+  boardWrap.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2) {
+      initialPinchDist = null;
+    }
+  }, { passive: true });
 }
 document.getElementById('zoomInBtn').onclick = ()=>{
   boardZoom = Math.min(ZOOM_MAX, +(boardZoom+ZOOM_STEP).toFixed(2));

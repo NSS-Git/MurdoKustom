@@ -4,24 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Murdokustom · Expediente X de Mocca & Jose </title>
+  <title>Murdocca · Expediente X de Mocca & Jose </title>
 
   <!-- =========================================================================
      ETIQUETAS DE COMPARTIR EN REDES SOCIALES (OPEN GRAPH / TWITTER)
      ========================================================================= -->
   <!-- Título que aparecerá al compartir el enlace -->
-  <meta property="og:title" content="Murdokustom · Expediente X de Mocca & Jose ">
+  <meta property="og:title" content="Murdocca · Expediente X de Mocca & Jose ">
   <!-- Descripción detallada que aparecerá debajo del título -->
   <meta property="og:description"
     content="Analiza las pistas, deduce la posición secreta de los sospechosos en el plano, evita los obstáculos y descubre al asesino.">
   <meta property="og:image" content="./Personajes/Mocca.png">
   <!-- URL de tu página web -->
-  <meta property="og:url" content="https://nss-git.github.io/MurdoKustom/">
+  <meta property="og:url" content="https://nss-git.github.io/Murdocca/">
   <meta property="og:type" content="website">
 
   <!-- Twitter Card (para que luzca genial también en X / Twitter) -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Murdokustom · El sudoku preferido de mi novia ✨✨">
+  <meta name="twitter:title" content="Murdocca · El sudoku preferido de mi novia ✨✨">
   <meta name="twitter:description"
     content="¡Conviértete en detective! Analiza las pistas, deduce la posición secreta de los sospechosos en el plano, evita los obstáculos y descubre al asesino.">
   <meta name="twitter:image" content="./Personajes/Mocca.png">
@@ -1026,7 +1026,7 @@
 
     <div class="masthead">
       <div class="kicker">Expediente de investigación</div>
-      <h1>Murdokustom</h1>
+      <h1>Murdocca</h1>
     </div>
 
 
@@ -1102,7 +1102,7 @@
       </div>
     </div>
 
-    <footer class="credits">Murdokustom</footer>
+    <footer class="credits">Murdocca</footer>
   </div>
 
   <div id="modalRoot"></div>
@@ -1134,10 +1134,10 @@
       { id: "mocca", name: "Mocca", emoji: "🐾", found: "hallada", pronoun: "ella" }
     ];
     function nextVictim() {
-      let idx = parseInt(localStorage.getItem('Murdokustom_victim_turn') || '0', 10);
+      let idx = parseInt(localStorage.getItem('Murdocca_victim_turn') || '0', 10);
       if (isNaN(idx)) idx = 0;
       const v = VICTIMS[idx % VICTIMS.length];
-      localStorage.setItem('Murdokustom_victim_turn', String(idx + 1));
+      localStorage.setItem('Murdocca_victim_turn', String(idx + 1));
       return v;
     }
     function personLabel(name) {

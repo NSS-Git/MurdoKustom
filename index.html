@@ -1870,13 +1870,58 @@
             if (userCross.has(key)) div.classList.add('crossed');
             if (armedCell === key && mode === 'place') div.classList.add('armed');
 
-            div.dataset.key = key;
-            div.addEventListener('pointerdown', (e) => startHold(r, c, div, e));
-            div.addEventListener('contextmenu', e => e.preventDefault());
-            div.addEventListener('click', () => {
-              if (suppressClick) { suppressClick = false; return; }
-              cellClick(r, c);
-            });
+            // REEMPLAZAR EN renderBoard():
+div.dataset.key = key;
+
+let cellTimer = null;
+let isLongPress = false;
+let startX = 0;
+let startY = 0;
+
+div.addEventListener('pointerdown', (e) => {
+  isLongPress = false;
+  startX = e.clientX;
+  startY = e.clientY;
+
+  // Iniciar el temporizador para la pulsación larga (500 ms)
+  cellTimer = setTimeout(() => {
+    isLongPress = true;
+    lockCell(r, c); // Fijar al 100% solo si se mantiene presionado
+  }, 500);
+});
+
+div.addEventListener('pointermove', (e) => {
+  if (cellTimer) {
+    const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+    if (dist > 10) { // Si el usuario arrastra o hace scroll, cancelamos
+      clearTimeout(cellTimer);
+      cellTimer = null;
+    }
+  }
+});
+
+div.addEventListener('pointerup', () => {
+  // Cancelar inmediatamente el temporizador al levantar el dedo
+  if (cellTimer) {
+    clearTimeout(cellTimer);
+    cellTimer = null;
+  }
+  // Si no se llegó a completar la pulsación larga, es un toque corto (Anotación)
+  if (!isLongPress) {
+    cellClick(r, c);
+  }
+});
+
+div.addEventListener('pointercancel', () => {
+  if (cellTimer) {
+    clearTimeout(cellTimer);
+    cellTimer = null;
+  }
+});
+
+div.addEventListener('click', (e) => {
+  e.preventDefault();
+});
           }
           board.appendChild(div);
         }
@@ -2176,25 +2221,24 @@ function hexAlpha(hex, alpha) {
       renderBoard();
     }
 
-    function cellClick(r, c) {
-      const key = `${r},${c}`;
-      if (userLocked.has(key)) return; // locked cells only change via long-press
-      if (mode === 'cross') {
-        takeSnapshot();
-        userNotes.delete(key);
-        if (userCross.has(key)) userCross.delete(key); else userCross.add(key);
-        armedCell = null;
-      } else {
-        if (!activeSuspect) return;
-        takeSnapshot();
-        userCross.delete(key);
-        const notes = userNotes.get(key) || new Set();
-        if (notes.has(activeSuspect)) notes.delete(activeSuspect); else notes.add(activeSuspect);
-        if (notes.size > 0) userNotes.set(key, notes); else userNotes.delete(key);
-        armedCell = key; // tapped once: now ready — hold THIS cell again to confirm the final position
-      }
-      renderBoard();
-    }
+function cellClick(r, c) {
+  const key = `${r},${c}`;
+  if (userLocked.has(key)) return; // Las celdas bloqueadas no cambian con toque corto
+
+  if (mode === 'cross') {
+    takeSnapshot();
+    userNotes.delete(key);
+    if (userCross.has(key)) userCross.delete(key); else userCross.add(key);
+  } else {
+    if (!activeSuspect) return;
+    takeSnapshot();
+    userCross.delete(key);
+    const notes = userNotes.get(key) || new Set();
+    if (notes.has(activeSuspect)) notes.delete(activeSuspect); else notes.add(activeSuspect);
+    if (notes.size > 0) userNotes.set(key, notes); else userNotes.delete(key);
+  }
+  renderBoard();
+}
 
     function selectPerson(name) {
       activeSuspect = name;
@@ -2546,6 +2590,8 @@ function hexAlpha(hex, alpha) {
       boardWrap.scrollLeft = (boardEl.scrollWidth * boardZoom - wrapW) / 2;
       boardWrap.scrollTop = (boardEl.scrollHeight * boardZoom - wrapH) / 2;
     };
+    // Ejemplo de aplicación dentro de tu bucle o función que crea las celdas (.cell)
+
   </script>
 </body>
 
